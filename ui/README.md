@@ -1,68 +1,67 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# UI for Cluster and Cloud Computing, Assignment 2
 
-## Available Scripts
+This UI will be based **heavily** on [OpenLayers](https://openlayers.org). From the [repository](https://github.com/openlayers/openlayers):
 
-In the project directory, you can run:
+> OpenLayers is a high-performance, feature-packed library for creating interactive maps on the web. It can display map tiles, vector data and markers loaded from any source on any web page. OpenLayers has been developed to further the use of geographic information of all kinds. It is completely free, Open Source JavaScript, released under the BSD 2-Clause License.
 
-### `npm start`
+## Why not [Mapbox](https://www.mapbox.com/).
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Because it has less versatility when adding another layer on top of existing map. For example, if we want to add another layer, we need to use its Studio to create the layer before consuming it later. This isn't feasible with our target because the area coordinates will be generated rather dynamically from the combination of AURIN and our semantic analysis result.
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+## How OpenLayers will help solve our problem
 
-### `npm test`
+Take this example: [GeoJSON](https://openlayers.org/en/latest/examples/geojson.html). If we want to add a triangle in a certain area, we can just do:
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```Javascript
+// Define the style for type "Polygon".
+'Polygon': new Style({
+  stroke: new Stroke({
+    color: 'blue',
+    lineDash: [4],
+    width: 3
+  }),
+  fill: new Fill({
+    color: 'rgba(0, 0, 255, 0.1)'
+  })
+})
 
-### `npm run build`
+// Draw a Feature of type "Polygon" on the map.
+{
+  'type': 'Feature',
+  'geometry': {
+    'type': 'Polygon',
+    'coordinates': [[[-5e6, -1e6], [-4e6, 1e6], [-3e6, -1e6]]]
+  }
+}
+```
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+The `e` in Javascript means multiplying with an exponent base 10. So, `-5e6` equals to `-5000000`. From above example, a triangle will be made between these 3 points:
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+```Javascript
+// This is the bottom-left point.
+Point 1: { x: -5000000, y: -1000000 }
+// This is the single top point.
+Point 2: { x: -4000000, y: 1000000 }
+// This is the bottom-right point.
+Point 2: { x: -3000000, y: -1000000 }
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+With the same fashion, we can do so make a polygon to a certain area. We just need to give a set of polygon that defines that region. Then, we can just put a set of random colors to color those regions later. We're all good, hopefully.
 
-### `npm run eject`
+## Demo
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+TBD
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## What's Used in UI
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+1. [Create React App](https://github.com/facebook/create-react-app): A tool used to build ReactJS app, without all the hassles configuring build tools, proxy, etc.
+2. [ReactJS](https://github.com/facebook/react): A UI library published by Facebook. It is really easy to compose components and combine this with other libraries.
+3. [OpenLayers](https://openlayers.org).
+4. [WebSocket](https://developer.mozilla.org/en-US/docs/Web/API/WebSocket): if we want to show something like, "Live Classification" and show it immediately on the UI, this can be really helpful. Easy to implement on server-side as well.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Running
 
-## Learn More
+### What you'll need
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+1. [Node.js®](https://nodejs.org/en/) LTS version. Create React App is running on top of a Node server for the development, because it's triggering Live Reload on file changes -- and we can set up the proxy as well, which can't be done without a server.
+2. [Yarn](https://yarnpkg.com/en/) for package management.
