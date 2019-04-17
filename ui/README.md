@@ -61,7 +61,13 @@ TBD
 
 ## Running
 
-### What you'll need
+### Prerequisites
 
 1. [Node.js®](https://nodejs.org/en/) LTS version. Create React App is running on top of a Node server for the development, because it's triggering Live Reload on file changes -- and we can set up the proxy as well, which can't be done without a server.
 2. [Yarn](https://yarnpkg.com/en/) for package management.
+
+### Getting started
+
+1. In this folder, `yarn` in your CLI.
+2. `yarn start` to start the development server.
+3. `yarn build` to build everything into an optimized bundle of static page.
