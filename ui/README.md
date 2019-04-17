@@ -10,7 +10,7 @@ Because it has less versatility when adding another layer on top of existing map
 
 ## How OpenLayers will help solve our problem
 
-Take this example: [GeoJSON](https://openlayers.org/en/latest/examples/geojson.html). If we want to add a triangle in a certain area, we can just do:
+From all possible examples in [this page](https://openlayers.org/en/latest/examples/), I think this example is the one that will help us a lot: [GeoJSON](https://openlayers.org/en/latest/examples/geojson.html). If we want to add a triangle in a certain area, we can just do:
 
 ```Javascript
 // Define the style for type "Polygon".
