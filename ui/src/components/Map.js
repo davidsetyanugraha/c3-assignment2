@@ -9,77 +9,97 @@ import { OSM, Vector as VectorSource } from 'ol/source';
 import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style';
 import Graticule from 'ol/Graticule.js';
 
-import territory from '../resources/capital_territory.json';
-
 const zoom = 5;
 const australiaMedian = fromLonLat([133.7751, -25.2744], 'EPSG:3857');
 
-// var styles = {
-//   Polygon: new Style({
-//     stroke: new Stroke({
-//       color: 'blue',
-//       lineDash: [4],
-//       width: 3
-//     }),
-//     fill: new Fill({
-//       color: 'rgba(0, 0, 255, 1)'
-//     })
-//   })
-// };
+async function getVectorLayer() {
+  const response = await fetch('http://localhost:3001');
+  const territory = await response.json();
 
-const territoryStyles = territory.features.map(() => {
-  return new Style({
-    stroke: new Stroke({
-      color: 'blue',
-      lineDash: [4],
-      width: 3
-    }),
-    fill: new Fill({
-      color: `rgba(${Math.random() * 255}, ${Math.random() *
-        255}, ${Math.random() * 255}, 1)`
-    })
+  // var styles = {
+  //   Polygon: new Style({
+  //     stroke: new Stroke({
+  //       color: 'blue',
+  //       lineDash: [4],
+  //       width: 3
+  //     }),
+  //     fill: new Fill({
+  //       color: 'rgba(0, 0, 255, 1)'
+  //     })
+  //   })
+  // };
+
+  const territoryStyles = territory.features.map(() => {
+    return new Style({
+      stroke: new Stroke({
+        color: 'blue',
+        lineDash: [4],
+        width: 3
+      }),
+      fill: new Fill({
+        color: `rgba(${Math.random() * 255}, ${Math.random() *
+          255}, ${Math.random() * 255}, 1)`
+      })
+    });
   });
-});
 
-var styleFunction = function(feature) {
-  return territoryStyles[feature.ol_uid / 2 - 1];
-};
+  var styleFunction = function(feature) {
+    // console.log(feature);
+    return territoryStyles[feature.ol_uid / 2 - 1];
+  };
 
-var geojsonObject = {
-  type: 'FeatureCollection',
-  crs: {
-    type: 'name',
-    properties: {
-      name: 'EPSG:3857'
-    }
-  },
-  features: territory.features.map(feature => {
-    return {
-      ...feature,
-      geometry: {
-        ...feature.geometry,
-        coordinates: feature.geometry.coordinates.map(line => {
-          return line.map(point => {
-            return fromLonLat(point, 'EPSG:3857');
-          });
-        })
+  var geojsonObject = {
+    type: 'FeatureCollection',
+    crs: {
+      type: 'name',
+      properties: {
+        name: 'EPSG:3857'
       }
-    };
-  })
-};
+    },
+    features: territory.features.map(feature => {
+      // console.log(feature);
+      const type = feature.geometry.type;
 
-var vectorSource = new VectorSource({
-  features: new GeoJSON().readFeatures(geojsonObject)
-});
+      return {
+        ...feature,
+        geometry: {
+          ...feature.geometry,
+          coordinates: feature.geometry.coordinates.map(outer => {
+            if (type === 'Polygon') {
+              return outer.map(point => {
+                // console.log(fromLonLat(point, 'EPSG:3857'));
+                return fromLonLat(point, 'EPSG:3857');
+              });
+            }
 
-vectorSource.addFeature(new Feature(new Circle([5e6, 7e6], 1e6)));
+            return outer.map(line => {
+              return line.map(point => {
+                // console.log(fromLonLat(point, 'EPSG:3857'));
+                return fromLonLat(point, 'EPSG:3857');
+              });
+            });
+          })
+        }
+      };
+    })
+  };
 
-var vectorLayer = new VectorLayer({
-  source: vectorSource,
-  style: styleFunction
-});
+  var vectorSource = new VectorSource({
+    features: new GeoJSON().readFeatures(geojsonObject)
+  });
 
-export default function generateMap(target) {
+  vectorSource.addFeature(new Feature(new Circle([5e6, 7e6], 1e6)));
+
+  var vectorLayer = new VectorLayer({
+    source: vectorSource,
+    style: styleFunction
+  });
+
+  return vectorLayer;
+}
+
+export default async function generateMap(target) {
+  const vectorLayer = await getVectorLayer();
   const map = new Map({
     layers: [
       new TileLayer({
