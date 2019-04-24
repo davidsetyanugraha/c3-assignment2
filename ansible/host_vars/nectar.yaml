@@ -1,0 +1,26 @@
+availability_zone: melbourne-qh2-uom
+
+volumes:
+ - vol_name: demo-vol-1
+   vol_size: 10
+ - vol_name: demo-vol-2
+   vol_size: 10
+
+security_groups:
+ - name: demo_ssh
+   description: "Demo se group for SSH"
+   protocol: tcp
+   port_range_min: 22
+   port_range_max: 22
+   remote_ip_prefix: 0.0.0.0/0
+ - name: demo_http
+   description: "Demo se group for HTTP"
+   protocol: tcp
+   port_range_min: 80
+   port_range_max: 80
+   remote_ip_prefix: 0.0.0.0/0
+
+instance_name: demo
+instance_image: 955a0556-1224-4499-a895-87d54d5cbf32
+instance_key_name: id_rsa.pub
+instance_flavor: uom.general.2c8g
