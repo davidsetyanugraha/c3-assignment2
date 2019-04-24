@@ -10,6 +10,10 @@
 # OpenStack API is version 3. For example, your cloud provider may implement
 # Image API v1.1, Block Storage API v2, and Compute API v2.0. OS_AUTH_URL is
 # only for the Identity API served through keystone.
+source nectar-credentials.sh
+export OS_USERNAME OS_PASSWORD
+
+echo $OS_PASSWORD
 export OS_AUTH_URL=https://keystone.rc.nectar.org.au:5000/v3/
 # With the addition of Keystone we have standardized on the term **project**
 # as the entity that owns the resources.
