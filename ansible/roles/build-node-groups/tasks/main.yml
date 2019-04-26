@@ -1,0 +1,7 @@
+---
+- name: adding all nodes to remote group
+  add_host:
+   groups: remote
+   name: '{{ item }}'
+  loop: '{{ nodes_ips }}'
+  register: remote_nodes

@@ -1,0 +1,24 @@
+---
+- name: Create instances
+  os_server:
+   name: '{{ item.0.node_name }}'
+   image: '{{ instance_image }}'
+   key_name: '{{ instance_key_name }}'
+   flavor: '{{ instance_flavor }}'
+   availability_zone: '{{ availability_zone }}'
+   security_groups: '{{ security_group }}'
+   volumes: '{{ item.1.vol_name }}'
+   auto_floating_ip: yes
+   wait: yes
+   timeout: 600
+   state: present  
+  loop: '{{ nodes|zip(volumes)|list }}'
+  register: created_nodes
+
+- name: Variable for IPs
+  set_fact:
+   nodes_ips: '{{ nodes_ips|default([]) + [ item.openstack.public_v4 ] }}'
+  loop: '{{ created_nodes.results }}'
+
+- debug:
+   msg: "remote hosts {{ nodes_ips }} are created"

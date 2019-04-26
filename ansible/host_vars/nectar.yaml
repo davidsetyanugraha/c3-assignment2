@@ -1,26 +1,46 @@
-availability_zone: melbourne-qh2-uom
+# host_vars
+
+availability_zone: melbourne-qh2
+
+security_group: SG-for-comp90024
+security_group_desc: "allow SSH, HTTP, HTTPS and support Ansible ports from world"
+world_ip_prefix: 0.0.0.0/0
+security_roles:
+ - protocol: tcp
+   port_range_min: 22
+   port_range_max: 22
+ - protocol: tcp
+   port_range_min: 80
+   port_range_max: 80
+ - protocol: tcp
+   port_range_min: 443
+   port_range_max: 443
+ - protocol: tcp
+   port_range_min: 5984
+   port_range_max: 5984
+ - protocol: tcp
+   port_range_min: 5986
+   port_range_max: 5986
+ - protocol: tcp
+   port_range_min: 9100
+   port_range_max: 9200
 
 volumes:
-  - vol_name: demo-vol-1
-    vol_size: 10
-  - vol_name: demo-vol-2
-    vol_size: 10
+ - vol_name: vol-1-50
+   vol_size: 50
+ - vol_name: vol-2-50
+   vol_size: 50
+ - vol_name: vol-3-50
+   vol_size: 50
+ - vol_name: vol-4-50
+   vol_size: 50
 
-security_groups:
-  - name: demo_ssh
-    description: 'Demo se group for SSH'
-    protocol: tcp
-    port_range_min: 22
-    port_range_max: 22
-    remote_ip_prefix: 0.0.0.0/0
-  - name: demo_http
-    description: 'Demo se group for HTTP'
-    protocol: tcp
-    port_range_min: 80
-    port_range_max: 80
-    remote_ip_prefix: 0.0.0.0/0
+nodes:
+ - node_name: node-1
+ - node_name: node-2
+ - node_name: node-3
+ - node_name: node-4
 
-instance_name: demo
 instance_image: 955a0556-1224-4499-a895-87d54d5cbf32
-instance_key_name: test
+instance_key_name: dading-key
 instance_flavor: uom.general.2c8g
