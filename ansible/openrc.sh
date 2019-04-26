@@ -12,8 +12,8 @@
 # only for the Identity API served through keystone.
 source nectar-credentials.sh
 export OS_USERNAME OS_PASSWORD
-
-echo $OS_PASSWORD
+export ANSIBLE_HOST_KEY_CHECKING=False
+#echo $OS_PASSWORD
 export OS_AUTH_URL=https://keystone.rc.nectar.org.au:5000/v3/
 # With the addition of Keystone we have standardized on the term **project**
 # as the entity that owns the resources.

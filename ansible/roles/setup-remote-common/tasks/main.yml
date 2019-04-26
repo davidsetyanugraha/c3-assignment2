@@ -1,7 +1,95 @@
 ---
+- name: add repo couchdb
+  become: yes
+  apt_repository:
+   repo: deb https://apache.bintray.com/couchdb-deb bionic main
+   state: present
+
+- name: add couchdb repo key
+  become: yes
+  apt_key:
+   url: https://couchdb.apache.org/repo/bintray-pubkey.asc
+   state: present
+#  args:
+#   warn: False
+
+- name: update cache and install couchdb
+  become: yes
+  apt:
+   name: couchdb
+   state: present
+   update_cache: yes
+
+- name:  Make CouchDB use the open ports
+  become: yes
+  blockinfile:
+   path: /opt/couchdb/etc/vm.args
+   insertafter: "-ssl session_lifetime 300$(?![\r\n])"
+   block: |
+    -kernel inet_dist_listen_max 9100
+    -kernel inet_dist_listen_max 9200
+   state: present
+
+- name: clustering first step
+  uri:
+   url: http://127.0.0.1:5984/_cluster_setup
+   user: admin
+   password: password
+   method: POST
+   body: '{"action": "enable_cluster", "bind_address":"0.0.0.0", "username": "admin", "password":"password", "node_count":"4"}'
+   body_format: json
+   force_basic_auth: yes
+   status_code: 201,400
+   headers:
+    Content-Type: "application/json"
+
+- name: Enable cluster
+  uri:
+    url: http://127.0.0.1:5984/_cluster_setup
+    user: admin
+    password: password
+    method: POST
+    body: '{"action": "enable_cluster", "bind_address":"0.0.0.0", "username": "admin", "password":"password", "port": 5984, "remote_node": "{{ item }}", "remote_current_user": "admin", "remote_current_password": "password" }'
+    force_basic_auth: yes
+    status_code: 201,409
+    body_format: json
+    headers:
+      Content-Type: "application/json"
+  with_items: "{{groups['remote']}}"
+  when: inventory_hostname == groups.remote[0] and inventory_hostname != item
+
+- name: Add cluster nodes
+  uri:
+    url: http://127.0.0.1:5984/_cluster_setup
+    method: POST
+    user: admin
+    password: password
+    body: '{"action": "add_node", "host":"{{ item }}", "port": "5984", "username": "admin", "password":"password"}'
+    force_basic_auth: yes
+    status_code: 201,409
+    body_format: json
+    headers:
+      Content-Type: "application/json"
+  with_items: "{{groups['remote']}}"
+  when: inventory_hostname == groups.remote[0] and inventory_hostname != item
+
+- name: finish the cluster
+  uri:
+    url: http://127.0.0.1:5984/_cluster_setup
+    method: POST
+    user: admin
+    password: password
+    body: '{"action": "finish_cluster"}'
+    force_basic_auth: yes
+    status_code: 201,200
+    body_format: json
+    headers:
+      Content-Type: "application/json"
+  when: inventory_hostname == groups.remote[0]
+
 - name: install pip
   become: yes
   apt:
    name: python-pip
-   state: latest
+   state: present
    update_cache: yes
