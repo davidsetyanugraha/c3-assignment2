@@ -14,3 +14,19 @@
    remote_ip_prefix: '{{ world_ip_prefix }}'
    state: present
   loop: '{{ security_roles }}'
+
+- name: Create internal security group
+  os_security_group:
+   name: '{{ security_group_internal }}'
+   description: '{{ security_group_internal_description }}'
+   state: present
+
+- name: Create rules for internal sg
+  os_security_group_rule:
+   security_group: '{{ security_group_internal }}'
+   protocol: '{{ item.protocol }}'
+   port_range_min: '{{ item.port_range_min }}'
+   port_range_max: '{{ item.port_range_max }}'
+   remote_group: '{{ security_group_internal }}'
+   state: present
+  loop: '{{ security_roles_internal }}'

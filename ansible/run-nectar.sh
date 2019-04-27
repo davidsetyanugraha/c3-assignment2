@@ -1,2 +1,2 @@
 #!/bin/bash
-. ./openrc.sh; ansible-playbook --ask-become-pass nectar.yaml -vvv
+. ./openrc.sh; ansible-playbook --ask-become-pass nectar.yaml #-vvv

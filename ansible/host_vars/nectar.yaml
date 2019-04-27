@@ -1,11 +1,14 @@
 # host_vars
 
-availability_zone: melbourne-qh2
+availability_zone: melbourne-qh2-uom
 
 security_group: SG-for-comp90024
 security_group_desc: "allow SSH, HTTP, HTTPS and support Ansible ports from world"
 world_ip_prefix: 0.0.0.0/0
 security_roles:
+ - protocol: icmp
+   port_range_min: -1
+   port_range_max: -1
  - protocol: tcp
    port_range_min: 22
    port_range_max: 22
@@ -19,21 +22,37 @@ security_roles:
    port_range_min: 5984
    port_range_max: 5984
  - protocol: tcp
+   port_range_min: 4369
+   port_range_max: 4369
+ - protocol: tcp
    port_range_min: 5986
    port_range_max: 5986
  - protocol: tcp
    port_range_min: 9100
    port_range_max: 9200
+sg_list: "SG-for-comp90024,internal"
+security_group_internal: internal
+security_group_internal_description: "for internal only"
+security_roles_internal:
+ - protocol: tcp
+   port_range_min: -1
+   port_range_max: -1
+ - protocol: udp
+   port_range_min: -1
+   port_range_max: -1
+ - protocol: icmp
+   port_range_min: -1
+   port_range_max: -1
 
 volumes:
- - vol_name: vol-1-50
-   vol_size: 50
- - vol_name: vol-2-50
-   vol_size: 50
- - vol_name: vol-3-50
-   vol_size: 50
- - vol_name: vol-4-50
-   vol_size: 50
+ - vol_name: vol-1
+   vol_size: 60
+ - vol_name: vol-2
+   vol_size: 60
+ - vol_name: vol-3
+   vol_size: 60
+ - vol_name: vol-4
+   vol_size: 60
 
 nodes:
  - node_name: node-1

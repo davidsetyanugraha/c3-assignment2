@@ -6,8 +6,9 @@
    key_name: '{{ instance_key_name }}'
    flavor: '{{ instance_flavor }}'
    availability_zone: '{{ availability_zone }}'
-   security_groups: '{{ security_group }}'
+   security_groups: '{{ sg_list }}'
    volumes: '{{ item.1.vol_name }}'
+   network: qh2-uom-internal
    auto_floating_ip: yes
    wait: yes
    timeout: 600
