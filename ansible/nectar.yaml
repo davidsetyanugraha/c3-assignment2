@@ -1,15 +1,15 @@
 #nectar.yaml
 - hosts: localhost
   vars_files:
-   - host_vars/nectar.yaml
+    - host_vars/nectar.yaml
   gather_facts: true
-  
+
   roles:
-   - role: build-common
-   - role: build-volume
-   - role: build-security-groups
-   - role: build-instance
-   - role: build-node-groups
+    - role: build-common
+    - role: build-volume
+    - role: build-security-groups
+    - role: build-instance
+    - role: build-node-groups
 
 #- name: Wait 10 seconds for port 22 to become open and contain OpenSSH
 #  wait_for:
@@ -22,6 +22,6 @@
   remote_user: ubuntu
   gather_facts: true
   roles:
-   - role: setup-remote-common
+    - role: setup-remote-common
   vars:
-   ansible_ssh_private_key_file: "/home/dading/dading-key.pem"
+    ansible_ssh_private_key_file: '~/Downloads/dading-key.pem'
