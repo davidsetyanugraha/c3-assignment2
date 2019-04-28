@@ -5,3 +5,11 @@
    name: '{{ item }}'
   loop: '{{ nodes_ips }}'
   register: remote_nodes
+
+- name: Wait 10 seconds for port 22 to become open and contain OpenSSH
+  wait_for:
+    port: 22
+    host: '{{ item }}'
+    search_regex: OpenSSH
+    delay: 10
+  loop: '{{ nodes_ips }}'

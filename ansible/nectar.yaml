@@ -10,6 +10,14 @@
    - role: build-security-groups
    - role: build-instance
    - role: build-node-groups
+
+#- name: Wait 10 seconds for port 22 to become open and contain OpenSSH
+#  wait_for:
+#    port: 22
+#    host: remote
+#    search_regex: OpenSSH
+#    delay: 10
+
 - hosts: remote
   remote_user: ubuntu
   gather_facts: true
