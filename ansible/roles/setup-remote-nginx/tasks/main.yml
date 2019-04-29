@@ -24,6 +24,7 @@
     src: /etc/nginx/sites-available/sites.conf
     dest: /etc/nginx/sites-enabled/sites.conf
     state: link
+  when: inventory_hostname == groups['remote'][0]
 
 - name: restart nginx
   become: true
