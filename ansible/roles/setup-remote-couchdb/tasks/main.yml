@@ -15,9 +15,9 @@
   package_facts:
     manager: 'auto'
 
-- name: debug
-  debug:
-    msg: "{{'couchdb' not in ansible_facts.packages}}"
+# - name: debug
+#   debug:
+#     msg: "{{'couchdb' not in ansible_facts.packages}}"
 
 - name: add repo couchdb
   become: yes
@@ -132,9 +132,9 @@
   when: inventory_hostname == groups['remote'][0]
   register: final_membership
 
-- name: debug
-  debug:
-    msg: '{{ final_membership }} and {{ initial_membership }}'
+# - name: debug
+#   debug:
+#     msg: '{{ final_membership }} and {{ initial_membership }}'
 
 - name: finish the cluster
   uri:
