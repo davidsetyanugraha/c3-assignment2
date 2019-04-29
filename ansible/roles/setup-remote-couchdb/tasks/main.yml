@@ -10,6 +10,11 @@
       no_proxy=localhost,127.0.0.1,ubuntu
     state: present
 
+# Purge couchdb if needed.
+# - name: Purge
+#   become: yes
+#   shell: apt-get purge -y couchdb
+
 # Checks if couchdb is installed. Use with `"'couchdb' not in ansible_facts.packages"`.
 - name: 'Check if couchdb is installed'
   package_facts:
@@ -139,7 +144,7 @@
 
 - name: finish the cluster
   uri:
-    url: http://admin:password@{{ groups['remote'][0] }}:5984/_cluster_setup
+    url: http://{{ groups['remote'][0] }}:5984/_cluster_setup
     method: POST
     user: admin
     password: password

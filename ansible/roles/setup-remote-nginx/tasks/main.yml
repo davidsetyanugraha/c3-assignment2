@@ -1,7 +1,8 @@
 ---
 - name: setup nginx
   become: true
-  template: src=setup-remote-nginx/resources/nginx.conf.tpl
+  # Relative to setup-remote-nginx role.
+  template: src=nginx.conf.tpl
     dest=/etc/nginx/nginx.conf
   when: inventory_hostname == groups['remote'][0]
 
