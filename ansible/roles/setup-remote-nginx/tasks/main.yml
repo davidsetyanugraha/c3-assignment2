@@ -11,7 +11,7 @@
     dest=/etc/nginx/nginx.conf
   when: inventory_hostname == groups['remote'][0]
 
-- name: configure nginx configuration for the specific site
+- name: configure server block configuration for the specific site
   become: true
   # Relative to setup-remote-nginx role.
   template: src=sites.conf.tpl
