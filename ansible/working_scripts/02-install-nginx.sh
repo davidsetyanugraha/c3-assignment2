@@ -1,5 +1,5 @@
 # Uninstall.
-sudo apt-get purge nginx nginx-common
+# sudo apt-get purge nginx nginx-common
 
 # Reinstall.
 sudo apt update
