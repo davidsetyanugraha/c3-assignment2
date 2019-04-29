@@ -1,4 +1,3 @@
-user www-data;
 worker_processes auto;
 pid /run/nginx.pid;
 
@@ -29,7 +28,7 @@ http {
   ##
   # Logging Settings
   ##
-  access_log /var/log/nginx/access.log timed_combined;
+  access_log /var/log/nginx/access.log;
   error_log /var/log/nginx/error.log;
   ##
   # Gzip Settings
