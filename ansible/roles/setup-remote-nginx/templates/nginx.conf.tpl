@@ -2,6 +2,7 @@
 server {
     # Nginx port.
     listen 80;
+    listen [::]:80;
 
     root /usr/share/nginx/html;
     index index.html;

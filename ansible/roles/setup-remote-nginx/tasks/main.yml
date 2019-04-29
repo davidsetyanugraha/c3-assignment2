@@ -1,10 +1,29 @@
 ---
-- name: setup nginx
+- name: install nginx
+  become: yes
+  script: working_scripts/02-install-nginx.sh
+  when: inventory_hostname == groups['remote'][0]
+
+- name: configure nginx common configuration
   become: true
   # Relative to setup-remote-nginx role.
   template: src=nginx.conf.tpl
     dest=/etc/nginx/nginx.conf
   when: inventory_hostname == groups['remote'][0]
+
+- name: configure nginx configuration for the specific site
+  become: true
+  # Relative to setup-remote-nginx role.
+  template: src=sites.conf.tpl
+    dest=/etc/nginx/sites_available/sites.conf
+  when: inventory_hostname == groups['remote'][0]
+
+- name: create symbolic link to sites-enabled
+  become: true
+  file:
+    src: /etc/nginx/sites-available/sites.conf
+    dest: /etc/nginx/sites-enabled/sites.conf
+    state: link
 
 - name: restart nginx
   become: true
