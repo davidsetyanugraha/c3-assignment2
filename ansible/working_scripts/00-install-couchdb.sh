@@ -4,9 +4,6 @@ ARG_NODENAME=$1
 # Set NODENAME to the used arguments; if not provided, use 127.0.0.1.
 NODENAME=${ARG_NODENAME:-127.0.0.1}
 
-# Purge the old couchdb to pieces. Uncomment when needed.
-# sudo apt-get purge couchdb -y
-
 # Update cache.
 sudo apt-get update
 

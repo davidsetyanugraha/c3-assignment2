@@ -15,11 +15,16 @@
   package_facts:
     manager: 'auto'
 
+- name: debug
+  debug:
+    msg: "{{'couchdb' not in ansible_facts.packages}}"
+
 - name: add repo couchdb
   become: yes
   apt_repository:
     repo: deb https://apache.bintray.com/couchdb-deb bionic main
     state: present
+    filename: couchdb
   when: "'couchdb' not in ansible_facts.packages"
 
 - name: add couchdb repo key
