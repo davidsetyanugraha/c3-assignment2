@@ -10,17 +10,17 @@
       no_proxy=localhost,127.0.0.1,ubuntu
     state: present
 
-- name: install erlang
-  become: yes
-  apt:
-    name: erlang-base
-    state: present
+# Checks if couchdb is installed. Use with `dpkg_result.stdout == ""`.
+- name: Check if couchdb is installed
+  shell: dpkg-query -l 'couchdb'
+  register: dpkg_result
 
 - name: add repo couchdb
   become: yes
   apt_repository:
     repo: deb https://apache.bintray.com/couchdb-deb bionic main
     state: present
+  when: dpkg_result.stdout == ""
 
 - name: add couchdb repo key
   become: yes
@@ -28,25 +28,12 @@
     url: https://couchdb.apache.org/repo/bintray-pubkey.asc
     validate_certs: no
     state: present
+  when: dpkg_result.stdout == ""
 
-- name: purge and install couchdb
+- name: install couchdb
   become: yes
   script: working_scripts/00-install-couchdb.sh {{ inventory_hostname }}
-
-# - name: update cache and install couchdb
-#   become: yes
-#   apt:
-#     name: couchdb
-#     state: present
-#     update_cache: yes
-
-# - name: set name in vm.args
-#   become: yes
-#   lineinfile:
-#     path: /opt/couchdb/etc/vm.args
-#     regexp: '^-name'
-#     line: '-name couchdb@{{ inventory_hostname }}'
-#     state: present
+  when: dpkg_result.stdout == ""
 
 - name: Make CouchDB use the open ports
   become: yes
@@ -57,35 +44,7 @@
       -kernel inet_dist_listen_min 9100
       -kernel inet_dist_listen_max 9200
     state: present
-
-# - name:  Set cookie to node1
-#   become: yes
-#   command: erl -name node-1@172.26.37.233 -setcookie 'brumbrum' -kernel inet_dist_listen_min 9100 -kernel inet_dist_listen_max 9200
-
-# - name:  Set cookie to node2
-#   become: yes
-#   command: erl -name node-2@172.26.38.47 -setcookie 'brumbrum' -kernel inet_dist_listen_min 9100 -kernel inet_dist_listen_max 9200
-
-# - name:  Confirming connectivity between nodes
-#   become: yes
-#   command: connect_node(node-2@172.26.38.47).
-
-# - name: Set node username and password
-#   uri:
-#     url: http://127.0.0.1:5984/_node/_local/_config/admins/admin
-#     method: PUT
-#     body: '"password"'
-#     status_code: 200,201,401
-
-# - name: Set node to listening
-#   uri:
-#     url: http://127.0.0.1:5984/_node/_local/_config/chttpd/bind_address
-#     user: admin
-#     password: password
-#     method: PUT
-#     body: '"0.0.0.0"'
-#     force_basic_auth: yes
-#     status_code: 200,201
+  when: dpkg_result.stdout == ""
 
 - name: Set uuid
   uri:
@@ -96,6 +55,7 @@
     body: '"60c9e8234dfba3e2fdab04bf92001142"'
     force_basic_auth: yes
     status_code: 200,201
+  when: dpkg_result.stdout == ""
 
 - name: Set secret
   uri:
@@ -106,6 +66,7 @@
     body: '"60c9e8234dfba3e2fdab04bf92001cc2"'
     force_basic_auth: yes
     status_code: 200,201
+  when: dpkg_result.stdout == ""
 
 - name: clustering first step
   uri:
@@ -119,18 +80,7 @@
     status_code: 201,400
     headers:
       Content-Type: 'application/json'
-
-# curl -X POST -H "Content-Type: application/json" http://admin:password@<setup-coordination-node>:5984/_cluster_setup -d \
-# '{
-#    "action": "enable_cluster",
-#    "bind_address":"0.0.0.0",
-#    "username": "admin",
-#    "password":"password",
-#    "port": 5984,
-#    "node_count": "3",
-#    "remote_node": "<remote-node-ip>",
-#    "remote_current_user": "<remote-node-username>",
-#    "remote_current_password": "<remote-node-password>" }'
+  when: dpkg_result.stdout == ""
 
 - name: Enable cluster
   uri:
@@ -145,15 +95,7 @@
     headers:
       Content-Type: 'application/json'
   with_items: "{{groups['remote']}}"
-  when: inventory_hostname == groups['remote'][0] and inventory_hostname != item
-
-# curl -X POST -H "Content-Type: application/json" http://admin:password@<setup-coordination-node>:5984/_cluster_setup -d \
-# '{
-#    "action": "add_node",
-#    "host":"<remote-node-ip>",
-#    "port": <remote-node-port>,
-#    "username": "admin",
-#    "password":"password"}'
+  when: inventory_hostname == groups['remote'][0] and inventory_hostname != item and dpkg_result.stdout == ""
 
 - name: Add cluster nodes
   uri:
@@ -168,50 +110,7 @@
     headers:
       Content-Type: 'application/json'
   with_items: "{{groups['remote']}}"
-  when: inventory_hostname == groups['remote'][0] and inventory_hostname != item
-
-#- name: clustering first step
-#  uri:
-#   url: http://127.0.0.1:5984/_cluster_setup
-#   user: admin
-#   password: password
-#   method: POST
-#   body: '{"action": "enable_cluster", "bind_address":"0.0.0.0", "username": "admin", "password":"password", "node_count":"4"}'
-#   body_format: json
-#   force_basic_auth: yes
-#   status_code: 201,400
-#   headers:
-#    Content-Type: "application/json"
-
-#- name: Enable cluster
-#  uri:
-#    url: http://127.0.0.1:5984/_cluster_setup
-#    user: admin
-#    password: password
-#    method: POST
-#    body: '{"action": "enable_cluster", "bind_address":"0.0.0.0", "username": "admin", "password":"password", "port": 5984, "remote_node": "{{ item }}", "remote_current_user": "admin", "remote_current_password": "password" }'
-#    force_basic_auth: yes
-#    status_code: 201,409
-#    body_format: json
-#    headers:
-#      Content-Type: "application/json"
-#  with_items: "{{groups['remote']}}"
-#  when: inventory_hostname == groups.remote[0] and inventory_hostname != item
-
-#- name: Add cluster nodes
-#  uri:
-#    url: http://127.0.0.1:5984/_cluster_setup
-#    method: POST
-#    user: admin
-#    password: password
-#    body: '{"action": "add_node", "host":"{{ item }}", "port": "5984", "username": "admin", "password":"password"}'
-#    force_basic_auth: yes
-#    status_code: 201,409
-#    body_format: json
-#    headers:
-#      Content-Type: "application/json"
-#  with_items: "{{groups['remote']}}"
-#  when: inventory_hostname == groups.remote[0] and inventory_hostname != item
+  when: inventory_hostname == groups['remote'][0] and inventory_hostname != item and dpkg_result.stdout == ""
 
 - name: finish the cluster
   uri:
@@ -225,10 +124,4 @@
     body_format: json
     headers:
       Content-Type: 'application/json'
-  when: inventory_hostname == groups.remote[0]
-#- name: install pip
-#  become: yes
-#  apt:
-#   name: python-pip
-#   state: present
-#   update_cache: yes
+  when: inventory_hostname == groups.remote[0] and dpkg_result.stdout == ""
