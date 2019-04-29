@@ -54,6 +54,18 @@
       -kernel inet_dist_listen_max 9200
     state: present
 
+- name:  Set cookie to node1
+  become: yes
+  command: erl -name node-1@172.26.37.233 -setcookie 'brumbrum' -kernel inet_dist_listen_min 9100 -kernel inet_dist_listen_max 9200
+
+- name:  Set cookie to node2
+  become: yes
+  command: erl -name node-2@172.26.38.47 -setcookie 'brumbrum' -kernel inet_dist_listen_min 9100 -kernel inet_dist_listen_max 9200
+
+- name:  Confirming connectivity between nodes
+  become: yes
+  command: connect_node(node-2@172.26.38.47).
+
 - name: Set node username and password
   uri:
     url: http://127.0.0.1:5984/_node/_local/_config/admins/admin
