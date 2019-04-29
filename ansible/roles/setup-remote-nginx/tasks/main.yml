@@ -15,7 +15,7 @@
   become: true
   # Relative to setup-remote-nginx role.
   template: src=sites.conf.tpl
-    dest=/etc/nginx/sites_available/sites.conf
+    dest=/etc/nginx/sites-available/sites.conf
   when: inventory_hostname == groups['remote'][0]
 
 - name: create symbolic link to sites-enabled
