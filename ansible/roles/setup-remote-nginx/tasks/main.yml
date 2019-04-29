@@ -1,8 +1,12 @@
 ---
 - name: setup nginx
-  template: src=nginx.conf.tpl
+  become: true
+  template: src=setup-remote-nginx/resources/nginx.conf.tpl
     dest=/etc/nginx/nginx.conf
+  when: inventory_hostname == groups['remote'][0]
 
 - name: restart nginx
+  become: true
   service: name=nginx
     state=restarted
+  when: inventory_hostname == groups['remote'][0]

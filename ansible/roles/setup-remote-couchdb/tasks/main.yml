@@ -150,6 +150,6 @@
     headers:
       Content-Type: 'application/json'
   when:
-    - inventory_hostname == groups.remote[0]
+    - inventory_hostname == groups['remote'][0]
     - final_membership.stdout != initial_membership.stdout
     - "'couchdb' not in ansible_facts.packages"
