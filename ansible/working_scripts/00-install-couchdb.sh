@@ -1,10 +1,18 @@
+# Use first argument as node name.
+ARG_NODENAME=$1
+
+# Set NODENAME to the used arguments; if not provided, use 127.0.0.1.
+NODENAME=${ARG_NODENAME:-127.0.0.1}
+
 # Fresh install
 sudo apt-get purge couchdb -y
 
 # Uncomment if not first try.
 # echo "deb https://apache.bintray.com/couchdb-deb bionic main" | sudo tee -a /etc/apt/sources.list
 # curl -L https://couchdb.apache.org/repo/bintray-pubkey.asc | sudo apt-key add -
-# sudo apt-get update
+
+# Update cache.
+sudo apt-get update
 
 # Set the password variable.
 COUCHDB_PASSWORD=password
@@ -19,7 +27,7 @@ COUCHDB_PASSWORD=password
 # debconf-set-selections: set input for interactive mode
 echo "couchdb couchdb/mode select clustered
 couchdb couchdb/mode seen true
-couchdb couchdb/nodename string couchdb@35.236.104.122
+couchdb couchdb/nodename string couchdb@${NODENAME}
 couchdb couchdb/nodename seen true
 couchdb couchdb/cookie string elmo
 couchdb couchdb/cookie seen true

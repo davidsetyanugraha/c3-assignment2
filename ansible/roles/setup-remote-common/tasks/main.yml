@@ -29,20 +29,24 @@
     validate_certs: no
     state: present
 
-- name: update cache and install couchdb
+- name: purge and install couchdb
   become: yes
-  apt:
-    name: couchdb
-    state: present
-    update_cache: yes
+  script: working_scripts/00-install-couchdb.sh {{ inventory_hostname }}
 
-- name: set name in vm.args
-  become: yes
-  lineinfile:
-    path: /opt/couchdb/etc/vm.args
-    regexp: '^-name'
-    line: '-name couchdb@{{ inventory_hostname }}'
-    state: present
+# - name: update cache and install couchdb
+#   become: yes
+#   apt:
+#     name: couchdb
+#     state: present
+#     update_cache: yes
+
+# - name: set name in vm.args
+#   become: yes
+#   lineinfile:
+#     path: /opt/couchdb/etc/vm.args
+#     regexp: '^-name'
+#     line: '-name couchdb@{{ inventory_hostname }}'
+#     state: present
 
 - name: Make CouchDB use the open ports
   become: yes
@@ -54,34 +58,34 @@
       -kernel inet_dist_listen_max 9200
     state: present
 
-- name:  Set cookie to node1
-  become: yes
-  command: erl -name node-1@172.26.37.233 -setcookie 'brumbrum' -kernel inet_dist_listen_min 9100 -kernel inet_dist_listen_max 9200
+# - name:  Set cookie to node1
+#   become: yes
+#   command: erl -name node-1@172.26.37.233 -setcookie 'brumbrum' -kernel inet_dist_listen_min 9100 -kernel inet_dist_listen_max 9200
 
-- name:  Set cookie to node2
-  become: yes
-  command: erl -name node-2@172.26.38.47 -setcookie 'brumbrum' -kernel inet_dist_listen_min 9100 -kernel inet_dist_listen_max 9200
+# - name:  Set cookie to node2
+#   become: yes
+#   command: erl -name node-2@172.26.38.47 -setcookie 'brumbrum' -kernel inet_dist_listen_min 9100 -kernel inet_dist_listen_max 9200
 
-- name:  Confirming connectivity between nodes
-  become: yes
-  command: connect_node(node-2@172.26.38.47).
+# - name:  Confirming connectivity between nodes
+#   become: yes
+#   command: connect_node(node-2@172.26.38.47).
 
-- name: Set node username and password
-  uri:
-    url: http://127.0.0.1:5984/_node/_local/_config/admins/admin
-    method: PUT
-    body: '"password"'
-    status_code: 200,201,401
+# - name: Set node username and password
+#   uri:
+#     url: http://127.0.0.1:5984/_node/_local/_config/admins/admin
+#     method: PUT
+#     body: '"password"'
+#     status_code: 200,201,401
 
-- name: Set node to listening
-  uri:
-    url: http://127.0.0.1:5984/_node/_local/_config/chttpd/bind_address
-    user: admin
-    password: password
-    method: PUT
-    body: '"0.0.0.0"'
-    force_basic_auth: yes
-    status_code: 200,201
+# - name: Set node to listening
+#   uri:
+#     url: http://127.0.0.1:5984/_node/_local/_config/chttpd/bind_address
+#     user: admin
+#     password: password
+#     method: PUT
+#     body: '"0.0.0.0"'
+#     force_basic_auth: yes
+#     status_code: 200,201
 
 - name: Set uuid
   uri:
