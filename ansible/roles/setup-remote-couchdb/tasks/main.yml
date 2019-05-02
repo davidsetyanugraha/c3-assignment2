@@ -1,4 +1,10 @@
 ---
+- name: format volume to ext4
+  become: yes
+  filesystem:
+   fstype: ext4
+   dev: /dev/vdb
+
 - name: add internet proxy
   become: yes
   blockinfile:
@@ -46,6 +52,51 @@
   script: working_scripts/00-install-couchdb.sh {{ inventory_hostname }}
   when: "'couchdb' not in ansible_facts.packages"
 
+#- name: create dir for couchdb
+#  become: yes
+#  file:
+#   path: /dev/vdb/couchdb
+#   state: directory
+#   owner: couchdb
+#   group: couchdb
+
+- name: create dir for couchdb
+  become: yes
+  file:
+   path: /mnt/couchdb
+   state: directory
+   owner: couchdb
+   group: couchdb
+
+- name: mount
+  become: yes
+  mount:
+   path: /mnt/couchdb
+   src: /dev/vdb
+   fstype: ext4
+   state: present
+
+- name: create dir for couchdb database
+  become: yes
+  file:
+   path: /mnt/couchdb/database
+   state: directory
+   owner: couchdb
+   group: couchdb
+
+- name: create dir for couchdb view
+  become: yes
+  file:
+   path: /mnt/couchdb/view
+   state: directory
+   owner: couchdb
+   group: couchdb
+
+#- name: feed new storage path
+#  become: yes
+#  template: src=local.ini
+#   dest: /opt/couchdb/etc/local.ini
+
 - name: Make CouchDB use the open ports
   become: yes
   blockinfile:
@@ -78,6 +129,28 @@
     force_basic_auth: yes
     status_code: 200,201
   when: "'couchdb' not in ansible_facts.packages"
+
+- name: make use 60 gb for db
+  uri:
+    url: http://{{ inventory_hostname }}:5984/_node/_local/_config/couchdb/database_dir
+    user: admin
+    password: password
+    method: PUT
+    body: '"/mnt/couchdb/database"'
+    force_basic_auth: yes
+    status_code: 200,201
+#  when: "'couchdb' not in ansible_facts.packages"
+
+#- name: make use 60 gb for db
+#  uri:
+#    url: http://{{ inventory_hostname }}:5984/_node/_local/_config/couchdb/view_index_dir
+#    user: admin
+#    password: password
+#    method: PUT
+#    body: '"/dev/vdb/couchdb/view"'
+#    force_basic_auth: yes
+#    status_code: 200,201
+#  when: "'couchdb' not in ansible_facts.packages"
 
 ##
 # Start clustering
