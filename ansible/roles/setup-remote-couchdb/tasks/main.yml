@@ -139,7 +139,7 @@
     body: '"/mnt/couchdb/database"'
     force_basic_auth: yes
     status_code: 200,201
-#  when: "'couchdb' not in ansible_facts.packages"
+  when: "'couchdb' not in ansible_facts.packages"
 
 #- name: make use 60 gb for db
 #  uri:
