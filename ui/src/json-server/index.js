@@ -1,5 +1,6 @@
 const http = require('http');
 const json = require('../../../geojson-files/victoria-without-suburbs.json');
+const statResult = require('../../../analysis/output/stat_area.json');
 
 const port = 3001;
 
@@ -20,7 +21,13 @@ http
 
     if (['GET', 'POST'].indexOf(req.method) > -1) {
       res.writeHead(200, headers);
-      res.end(JSON.stringify(json));
+
+      if (req.url === '/') {
+        res.end(JSON.stringify(json));
+      } else {
+        res.end(JSON.stringify(statResult));
+      }
+
       return;
     }
 

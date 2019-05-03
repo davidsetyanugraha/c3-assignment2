@@ -9,36 +9,61 @@ import { OSM, Vector as VectorSource } from 'ol/source';
 import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style';
 import Graticule from 'ol/Graticule.js';
 
-const zoom = 5;
-const australiaMedian = fromLonLat([133.7751, -25.2744], 'EPSG:3857');
+const victoriaBoundingBox = [
+  [140.96190162, -39.19848673],
+  [150.03328204, -33.98079743]
+];
+
+const zoom = 7;
+const victoriaMedian = fromLonLat(
+  [
+    (victoriaBoundingBox[0][0] + victoriaBoundingBox[1][0]) / 2,
+    (victoriaBoundingBox[0][1] + victoriaBoundingBox[1][1]) / 2
+  ],
+  'EPSG:3857'
+);
 
 async function getVectorLayer() {
-  const response = await fetch('http://localhost:3001');
+  const [response, area] = await Promise.all([
+    fetch('http://localhost:3001'),
+    fetch('http://localhost:3001/stat')
+  ]);
   const territory = await response.json();
+  const results = await area.json();
 
-  // var styles = {
-  //   Polygon: new Style({
-  //     stroke: new Stroke({
-  //       color: 'blue',
-  //       lineDash: [4],
-  //       width: 3
-  //     }),
-  //     fill: new Fill({
-  //       color: 'rgba(0, 0, 255, 1)'
-  //     })
-  //   })
-  // };
+  let max = -999999;
 
-  const territoryStyles = territory.features.map(() => {
+  Object.values(results).forEach(result => {
+    if (result.freq_gluttony > max) {
+      max = result.freq_gluttony;
+    }
+  });
+
+  const territoryStyles = territory.features.map(feature => {
+    const val = results[feature.properties.lga_pid].freq_gluttony;
+    let colored = false;
+    let color;
+
+    if (val > 0) {
+      const minVal = 128;
+      const red = (val / minVal) * minVal + minVal;
+      colored = true;
+
+      color = `rgba(${red}, 0, 0, 0.5)`;
+    } else {
+      color = `rgba(255, 255, 255, 0)`;
+    }
+
     return new Style({
-      stroke: new Stroke({
-        color: 'blue',
-        lineDash: [4],
-        width: 3
-      }),
+      stroke: colored
+        ? new Stroke({
+            color: 'white',
+            lineDash: [3],
+            width: 3
+          })
+        : undefined,
       fill: new Fill({
-        color: `rgba(${Math.random() * 255}, ${Math.random() *
-          255}, ${Math.random() * 255}, 1)`
+        color
       })
     });
   });
@@ -109,7 +134,7 @@ export default async function generateMap(target) {
     ],
     target: target.current,
     view: new View({
-      center: australiaMedian,
+      center: victoriaMedian,
       zoom
     })
   });
@@ -117,11 +142,11 @@ export default async function generateMap(target) {
   // Create the graticule component
   var graticule = new Graticule({
     // the style to use for the lines, optional.
-    strokeStyle: new Stroke({
-      color: 'rgba(255,120,0,0.9)',
-      width: 2,
-      lineDash: [0.5, 4]
-    }),
+    // strokeStyle: new Stroke({
+    //   color: 'rgba(255,120,0,0.9)',
+    //   width: 2,
+    //   lineDash: [0.5, 4]
+    // }),
     showLabels: true
   });
 
