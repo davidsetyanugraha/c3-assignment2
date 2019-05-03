@@ -1,5 +1,5 @@
 const http = require('http');
-const json = require('../resources/melbourne_territory.json');
+const json = require('../../../geojson-files/victoria-without-suburbs.json');
 
 const port = 3001;
 
