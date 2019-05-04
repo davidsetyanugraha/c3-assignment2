@@ -1,6 +1,6 @@
 Below is the specification required to animate dots/create lines on the map.
 
-```json
+```js
 {
   users: [
     {
