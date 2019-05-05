@@ -23,7 +23,7 @@ class MyStreamListener(tweepy.StreamListener):
         data = json.dumps(status._json)
 
         # Insert Document to Tweets database
-        url = BASE_URL+'/victoria/' + str(status.id)
+        url = BASE_URL + '/victoria/\"' + str(status.id) + '\"'
         response = db.put(url, data)
 
         # Catch the error from DB response
@@ -44,10 +44,10 @@ db = requests.Session()
 db.auth = (USERNAME, PASSWORD)
 
 # API Twitter Configuration
-consumer_key = "NKplhMO19jOi5KwnR3QlUJnUx"
-consumer_secret = "MEQx2FmsOjbaxxm0CeE9u9OHNqQ0xIqFul30tIfkFHRCF7oy6j"
-access_token = "156224585-C6LFHPJjxlVNu5QXfTnTwW2Z7Ka7ZoqDSi8ly5JV"
-access_token_secret = "mQXX1pVixM3GfRYI3YVXH7f9669SUnTtaJMcyHIR2MWmE"
+consumer_key = "zUbPyH4bfQ8BC8cOKHBXuFe3S"
+consumer_secret = "zh4ioGw7vBWMKJ5E2pfgwcIcqUJezjIjV6UUWmCTAfSy4ki7P2"
+access_token = "170182726-U9LBuNEGA1pUDX8XIQBbXjxEgK4TxuUoVTZXFWwc"
+access_token_secret = "1RdmAN39YpPNRBZvv0Nfiie0LPxrhEUQHvffzDPqqxkGw"
 
 # Tweepy Initialization
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
