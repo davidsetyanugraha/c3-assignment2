@@ -41,15 +41,14 @@ async function getVectorLayer() {
 
   const territoryStyles = territory.features.map(feature => {
     const val = results[feature.properties.lga_pid].freq_gluttony;
+    const red = (val / max) * 224;
     let colored = false;
     let color;
 
-    if (val > 0) {
-      const minVal = 128;
-      const red = (val / minVal) * minVal + minVal;
+    if (red > 0) {
       colored = true;
 
-      color = `rgba(${red}, 0, 0, 0.5)`;
+      color = `rgba(${red + 32}, 0, 0, 0.8)`;
     } else {
       color = `rgba(255, 255, 255, 0)`;
     }
