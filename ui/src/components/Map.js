@@ -168,9 +168,13 @@ export default async function generateMap(
   map.on('singleclick', function(evt) {
     var coordinate = evt.coordinate;
     var hdms = toStringHDMS(toLonLat(coordinate));
-
+    console.log(evt);
     setContent('<p>You clicked here:</p><code>' + hdms + '</code>');
     overlay.setPosition(coordinate);
+  });
+
+  select.on('select', function(evt) {
+    console.log(evt);
   });
 
   // For selection.
