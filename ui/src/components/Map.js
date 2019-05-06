@@ -1,13 +1,17 @@
-import { fromLonLat } from 'ol/proj.js';
+import { toLonLat, fromLonLat } from 'ol/proj.js';
 import Feature from 'ol/Feature';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import GeoJSON from 'ol/format/GeoJSON';
 import Circle from 'ol/geom/Circle';
 import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer';
+import Select from 'ol/interaction/Select.js';
+import { pointerMove } from 'ol/events/condition.js';
 import { OSM, Vector as VectorSource } from 'ol/source';
-import { Circle as CircleStyle, Fill, Stroke, Style } from 'ol/style';
-import Graticule from 'ol/Graticule.js';
+import { Fill, Stroke, Style } from 'ol/style';
+
+import Overlay from 'ol/Overlay.js';
+import { toStringHDMS } from 'ol/coordinate.js';
 
 const victoriaBoundingBox = [
   [140.96190162, -39.19848673],
@@ -40,15 +44,17 @@ async function getVectorLayer() {
   });
 
   const territoryStyles = territory.features.map(feature => {
+    // TODO(aji): we need to perform logarithmic scale on these values later.
     const val = results[feature.properties.lga_pid].freq_gluttony;
-    const red = (val / max) * 224;
+    const red = (val / max) * 255;
+    const green = 255 - red;
     let colored = false;
     let color;
 
     if (red > 0) {
       colored = true;
 
-      color = `rgba(${red + 32}, 0, 0, 0.8)`;
+      color = `rgba(${red}, ${green}, 0, 0.9)`;
     } else {
       color = `rgba(255, 255, 255, 0)`;
     }
@@ -122,34 +128,55 @@ async function getVectorLayer() {
   return vectorLayer;
 }
 
-export default async function generateMap(target) {
+export default async function generateMap(
+  target,
+  overlayWrapper,
+  setContent,
+  oldMap
+) {
   const vectorLayer = await getVectorLayer();
-  const map = new Map({
-    layers: [
-      new TileLayer({
-        source: new OSM()
-      }),
-      vectorLayer
-    ],
-    target: target.current,
-    view: new View({
-      center: victoriaMedian,
-      zoom
-    })
+  const overlay = new Overlay({
+    element: overlayWrapper.current,
+    autoPan: true,
+    autoPanAnimation: {
+      duration: 250
+    }
+  });
+  let map;
+
+  if (!oldMap) {
+    map = new Map({
+      layers: [
+        new TileLayer({
+          source: new OSM()
+        }),
+        vectorLayer
+      ],
+      overlays: [overlay],
+      target: target.current,
+      view: new View({
+        center: victoriaMedian,
+        zoom
+      })
+    });
+  }
+
+  const select = new Select({
+    condition: pointerMove
   });
 
-  // Create the graticule component
-  var graticule = new Graticule({
-    // the style to use for the lines, optional.
-    // strokeStyle: new Stroke({
-    //   color: 'rgba(255,120,0,0.9)',
-    //   width: 2,
-    //   lineDash: [0.5, 4]
-    // }),
-    showLabels: true
+  map.on('singleclick', function(evt) {
+    var coordinate = evt.coordinate;
+    var hdms = toStringHDMS(toLonLat(coordinate));
+
+    setContent('<p>You clicked here:</p><code>' + hdms + '</code>');
+    overlay.setPosition(coordinate);
   });
 
-  graticule.setMap(map);
+  // For selection.
+  // https://openlayers.org/en/latest/examples/vector-tile-selection.html.
+
+  map.addInteraction(select);
 
   return map;
 }
