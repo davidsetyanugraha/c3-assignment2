@@ -25,13 +25,19 @@ function App({ classes }) {
     setState(1);
 
     async function getMap() {
-      return await generateMap(target, container, setContent, map, overlay);
+      const newMap = await generateMap(
+        target,
+        container,
+        setContent,
+        map,
+        overlay
+      );
+      if (target.current !== null) {
+        setMap(newMap);
+      }
     }
 
-    const newMap = getMap();
-    if (target.current !== null) {
-      setMap(newMap);
-    }
+    getMap();
 
     return () => {};
   }, []);

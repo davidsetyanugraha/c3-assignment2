@@ -3,12 +3,12 @@ import Feature from 'ol/Feature';
 import Map from 'ol/Map';
 import View from 'ol/View';
 import GeoJSON from 'ol/format/GeoJSON';
-import Circle from 'ol/geom/Circle';
 import { Tile as TileLayer, Vector as VectorLayer } from 'ol/layer';
 import Select from 'ol/interaction/Select.js';
 import { pointerMove } from 'ol/events/condition.js';
 import { OSM, Vector as VectorSource } from 'ol/source';
 import { Fill, Stroke, Style } from 'ol/style';
+import Circle from 'ol/geom/Circle.js';
 
 import Overlay from 'ol/Overlay.js';
 
@@ -42,9 +42,8 @@ async function getVectorLayer() {
     }
   });
 
-  const territoryStyles = territory.features.map(feature => {
-    // TODO(aji): we need to perform logarithmic scale on these values later.
-    const val = results[feature.properties.lga_pid].freq_gluttony;
+  var styleFunction = function(feature) {
+    const val = results[feature.values_.lga_pid].freq_gluttony;
     const red = (val / max) * 255;
     const green = 255 - red;
     let colored = false;
@@ -70,10 +69,6 @@ async function getVectorLayer() {
         color
       })
     });
-  });
-
-  var styleFunction = function(feature) {
-    return territoryStyles[feature.ol_uid / 2 - 1];
   };
 
   var geojsonObject = {
@@ -132,7 +127,8 @@ export default async function generateMap(
   overlayWrapper,
   setContent,
   oldMap,
-  openlayerOverlay
+  openlayerOverlay,
+  otherLayers = []
 ) {
   const vectorLayer = await getVectorLayer();
   const overlay = new Overlay({
@@ -151,7 +147,7 @@ export default async function generateMap(
           source: new OSM()
         }),
         vectorLayer
-      ],
+      ].concat(otherLayers),
       overlays: [overlay],
       target: target.current,
       view: new View({
