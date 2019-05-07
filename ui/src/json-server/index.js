@@ -1,6 +1,7 @@
 const http = require('http');
 const json = require('../../../geojson-files/victoria-without-suburbs.json');
 const statResult = require('../../../analysis/output/stat_area.json');
+const favoriteResult = require('../../../analysis/output/agg_favorite_cat.json');
 
 const port = 3001;
 
@@ -24,6 +25,8 @@ http
 
       if (req.url === '/') {
         res.end(JSON.stringify(json));
+      } else if (req.url === '/agg-fav') {
+        res.end(JSON.stringify(favoriteResult));
       } else {
         res.end(JSON.stringify(statResult));
       }
