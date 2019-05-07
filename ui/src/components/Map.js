@@ -1,4 +1,4 @@
-import { toLonLat, fromLonLat } from 'ol/proj.js';
+import { fromLonLat } from 'ol/proj.js';
 import Feature from 'ol/Feature';
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -11,7 +11,6 @@ import { OSM, Vector as VectorSource } from 'ol/source';
 import { Fill, Stroke, Style } from 'ol/style';
 
 import Overlay from 'ol/Overlay.js';
-import { toStringHDMS } from 'ol/coordinate.js';
 
 const victoriaBoundingBox = [
   [140.96190162, -39.19848673],
@@ -74,7 +73,6 @@ async function getVectorLayer() {
   });
 
   var styleFunction = function(feature) {
-    // console.log(feature);
     return territoryStyles[feature.ol_uid / 2 - 1];
   };
 
@@ -87,24 +85,25 @@ async function getVectorLayer() {
       }
     },
     features: territory.features.map(feature => {
-      // console.log(feature);
-      const type = feature.geometry.type;
+      const { properties, geometry, ...rest } = feature;
 
       return {
-        ...feature,
+        ...rest,
+        properties: {
+          ...properties,
+          freq: results[properties.lga_pid].freq_gluttony
+        },
         geometry: {
-          ...feature.geometry,
-          coordinates: feature.geometry.coordinates.map(outer => {
-            if (type === 'Polygon') {
+          ...geometry,
+          coordinates: geometry.coordinates.map(outer => {
+            if (geometry.type === 'Polygon') {
               return outer.map(point => {
-                // console.log(fromLonLat(point, 'EPSG:3857'));
                 return fromLonLat(point, 'EPSG:3857');
               });
             }
 
             return outer.map(line => {
               return line.map(point => {
-                // console.log(fromLonLat(point, 'EPSG:3857'));
                 return fromLonLat(point, 'EPSG:3857');
               });
             });
@@ -132,7 +131,8 @@ export default async function generateMap(
   target,
   overlayWrapper,
   setContent,
-  oldMap
+  oldMap,
+  openlayerOverlay
 ) {
   const vectorLayer = await getVectorLayer();
   const overlay = new Overlay({
@@ -167,20 +167,24 @@ export default async function generateMap(
 
   map.on('singleclick', function(evt) {
     var coordinate = evt.coordinate;
-    var hdms = toStringHDMS(toLonLat(coordinate));
-    console.log(evt);
-    setContent('<p>You clicked here:</p><code>' + hdms + '</code>');
-    overlay.setPosition(coordinate);
-  });
 
-  select.on('select', function(evt) {
-    console.log(evt);
+    const [feature] = evt.target.getFeaturesAtPixel(evt.pixel) || [];
+
+    if (feature) {
+      const { freq } = feature.values_;
+
+      if (freq > 0) {
+        setContent(`Gluttony freq: ${feature.values_.freq}`);
+        overlay.setPosition(coordinate);
+      }
+    }
   });
 
   // For selection.
   // https://openlayers.org/en/latest/examples/vector-tile-selection.html.
 
   map.addInteraction(select);
+  openlayerOverlay.current = overlay;
 
   return map;
 }
