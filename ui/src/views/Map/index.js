@@ -30,7 +30,7 @@ function App({ classes }) {
         container,
         setContent,
         map.current,
-        overlay
+        undefined
       );
 
       map.current = newMap;
@@ -39,12 +39,13 @@ function App({ classes }) {
     getMap();
 
     return () => {
-      // target.current = null;
+      target.current = null;
+      container.current = null;
+      // map.current.removeOverlay(overlay.current);
       // overlay.current.setElement(undefined);
       // overlay.current = null;
-      // container.current = null;
-      // map.current.setTarget(undefined);
-      // map.current = null;
+      map.current.setTarget(undefined);
+      map.current = null;
     };
   }, []);
 

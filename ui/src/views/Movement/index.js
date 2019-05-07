@@ -102,10 +102,10 @@ function Movement({ classes }) {
     async function getMap() {
       const newMap = await generateMap(
         target,
-        container,
-        setContent,
+        undefined,
+        undefined,
         map.current,
-        overlay,
+        undefined,
         [vectorLayer2]
       );
 
