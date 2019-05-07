@@ -1,37 +1,24 @@
-import React, { useRef, useEffect, useState, Fragment } from 'react';
-import './App.css';
+import React from 'react';
 
-import generateMap from './components/Map';
+import { MuiThemeProvider } from '@material-ui/core';
+import { Router } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
 
-function App() {
-  const target = useRef(null);
-  const overlayWrapper = useRef(null);
-  const [, setState] = useState(0);
-  const [content, setContent] = useState(undefined);
-  const [map, setMap] = useState(undefined);
+import Sidebar from './components/Sidebar';
+import Routes from './routes';
+import theme from './theme';
 
-  useEffect(function() {
-    // Force update.
-    setState(1);
+const history = createBrowserHistory();
 
-    async function getMap() {
-      return await generateMap(target, overlayWrapper, setContent, map);
-    }
-
-    const newMap = getMap();
-    if (target.current !== null) {
-      setMap(newMap);
-    }
-
-    return () => {};
-  }, []);
-
+function ThemeProvider() {
   return (
-    <Fragment>
-      <div ref={target} className="map" id="map" />
-      <div ref={overlayWrapper}>{content}</div>
-    </Fragment>
+    <MuiThemeProvider theme={theme}>
+      <Sidebar />
+      <Router history={history}>
+        <Routes />
+      </Router>
+    </MuiThemeProvider>
   );
 }
 
-export default App;
+export default ThemeProvider;
