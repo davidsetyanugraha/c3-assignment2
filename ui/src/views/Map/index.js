@@ -15,10 +15,10 @@ function App({ classes }) {
   const target = useRef(null);
   const container = useRef(null);
   const overlay = useRef(null);
+  const map = useRef(null);
 
   const [, setState] = useState(0);
   const [content, setContent] = useState(undefined);
-  const [map, setMap] = useState(undefined);
 
   useEffect(function() {
     // Force update.
@@ -29,17 +29,22 @@ function App({ classes }) {
         target,
         container,
         setContent,
-        map,
+        map.current,
         overlay
       );
-      if (target.current !== null) {
-        setMap(newMap);
-      }
+
+      map.current = newMap;
     }
 
     getMap();
 
-    return () => {};
+    return () => {
+      overlay.current.setElement(undefined);
+      overlay.current = null;
+      container.current = null;
+      map.current.setTarget(null);
+      map.current = null;
+    };
   }, []);
 
   function onClose(e) {
@@ -52,7 +57,7 @@ function App({ classes }) {
 
   return (
     <Fragment>
-      <div
+      {/* <div
         ref={container}
         className={classes.container}
         style={{
@@ -71,7 +76,7 @@ function App({ classes }) {
           x
         </button>
         {content}
-      </div>
+      </div> */}
       <div ref={target} className="map" id="map" />
     </Fragment>
   );

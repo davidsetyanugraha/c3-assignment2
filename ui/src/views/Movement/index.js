@@ -195,7 +195,7 @@ function Movement({ classes }) {
 
   return (
     <Fragment>
-      <div
+      {/* <div
         ref={container}
         className={classes.container}
         style={{
@@ -214,7 +214,7 @@ function Movement({ classes }) {
           x
         </button>
         {content}
-      </div>
+      </div> */}
       <div ref={target} className="map" id="map" />
       <button onClick={onClick}>start movement</button>
     </Fragment>
