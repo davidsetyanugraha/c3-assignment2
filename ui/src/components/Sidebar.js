@@ -10,6 +10,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 
+import { Link } from 'react-router-dom';
+
 const styles = theme => ({
   root: {
     display: 'flex'
@@ -33,6 +35,12 @@ const styles = theme => ({
   }
 });
 
+const routes = [
+  { to: '/', name: 'Charts' },
+  { to: '/map', name: 'Distribution' },
+  { to: '/movement', name: 'Movement' }
+];
+
 function PermanentDrawerLeft(props) {
   const { classes } = props;
 
@@ -48,13 +56,15 @@ function PermanentDrawerLeft(props) {
         anchor="left"
       >
         <List>
-          {['Charts', 'Distribution', 'Movements'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
+          {routes.map(({ to, name }, index) => (
+            <Link to={to} key={name}>
+              <ListItem button>
+                <ListItemIcon>
+                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                </ListItemIcon>
+                <ListItemText primary={name} />
+              </ListItem>
+            </Link>
           ))}
         </List>
       </Drawer>

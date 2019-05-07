@@ -13,8 +13,8 @@ const history = createBrowserHistory();
 function ThemeProvider() {
   return (
     <MuiThemeProvider theme={theme}>
-      <Sidebar />
       <Router history={history}>
+        <Sidebar />
         <Routes />
       </Router>
     </MuiThemeProvider>
