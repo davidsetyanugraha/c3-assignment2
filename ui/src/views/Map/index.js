@@ -39,11 +39,12 @@ function App({ classes }) {
     getMap();
 
     return () => {
-      overlay.current.setElement(undefined);
-      overlay.current = null;
-      container.current = null;
-      map.current.setTarget(null);
-      map.current = null;
+      // target.current = null;
+      // overlay.current.setElement(undefined);
+      // overlay.current = null;
+      // container.current = null;
+      // map.current.setTarget(undefined);
+      // map.current = null;
     };
   }, []);
 
@@ -57,14 +58,14 @@ function App({ classes }) {
 
   return (
     <Fragment>
-      {/* <div
+      <div
         ref={container}
         className={classes.container}
         style={{
           display: content === undefined ? 'none' : 'block'
         }}
       >
-        <button
+        {/* <button
           ref={node => {
             if (node) {
               if (node.onclick === null) {
@@ -74,9 +75,9 @@ function App({ classes }) {
           }}
         >
           x
-        </button>
+        </button> */}
         {content}
-      </div> */}
+      </div>
       <div ref={target} className="map" id="map" />
     </Fragment>
   );

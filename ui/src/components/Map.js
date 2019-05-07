@@ -131,13 +131,13 @@ export default async function generateMap(
   otherLayers = []
 ) {
   const vectorLayer = await getVectorLayer();
-  const overlay = new Overlay({
-    element: overlayWrapper.current,
-    autoPan: true,
-    autoPanAnimation: {
-      duration: 250
-    }
-  });
+  // const overlay = new Overlay({
+  //   element: overlayWrapper.current,
+  //   autoPan: true,
+  //   autoPanAnimation: {
+  //     duration: 250
+  //   }
+  // });
   let map;
 
   if (!oldMap) {
@@ -148,7 +148,7 @@ export default async function generateMap(
         }),
         vectorLayer
       ].concat(otherLayers),
-      overlays: [overlay],
+      // overlays: [overlay],
       target: target.current,
       view: new View({
         center: victoriaMedian,
@@ -161,26 +161,26 @@ export default async function generateMap(
     condition: pointerMove
   });
 
-  map.on('singleclick', function(evt) {
-    var coordinate = evt.coordinate;
+  // map.on('singleclick', function(evt) {
+  //   var coordinate = evt.coordinate;
 
-    const [feature] = evt.target.getFeaturesAtPixel(evt.pixel) || [];
+  //   const [feature] = evt.target.getFeaturesAtPixel(evt.pixel) || [];
 
-    if (feature) {
-      const { freq } = feature.values_;
+  //   if (feature) {
+  //     const { freq } = feature.values_;
 
-      if (freq > 0) {
-        setContent(`Gluttony freq: ${feature.values_.freq}`);
-        overlay.setPosition(coordinate);
-      }
-    }
-  });
+  //     if (freq > 0) {
+  //       setContent(`Gluttony freq: ${feature.values_.freq}`);
+  //       overlay.setPosition(coordinate);
+  //     }
+  //   }
+  // });
 
   // For selection.
   // https://openlayers.org/en/latest/examples/vector-tile-selection.html.
 
   map.addInteraction(select);
-  openlayerOverlay.current = overlay;
+  // openlayerOverlay.current = overlay;
 
   return map;
 }

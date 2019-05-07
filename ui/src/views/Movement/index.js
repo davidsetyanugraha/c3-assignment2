@@ -21,12 +21,10 @@ function Movement({ classes }) {
   const target = useRef(null);
   const container = useRef(null);
   const overlay = useRef(null);
+  const map = useRef(null);
 
   const [, setState] = useState(0);
   const [content, setContent] = useState(undefined);
-  const [map, setMap] = useState(undefined);
-
-  const [moving, setMoving] = useState(false);
 
   var locations = [
     [140.44241609, -36.84913974],
@@ -106,27 +104,23 @@ function Movement({ classes }) {
         target,
         container,
         setContent,
-        map,
+        map.current,
         overlay,
         [vectorLayer2]
       );
-      if (target.current !== null) {
-        setMap(newMap);
-      }
+
+      map.current = newMap;
     }
 
     getMap();
 
-    return () => {};
+    return () => {
+      target.current = null;
+      overlay.current = null;
+      container.current = null;
+      map.current = null;
+    };
   }, []);
-
-  function onClose(e) {
-    e.preventDefault();
-    if (overlay.current) {
-      overlay.current.setPosition(undefined);
-      setContent(undefined);
-    }
-  }
 
   function onClick() {
     // if (moving) {
@@ -161,7 +155,7 @@ function Movement({ classes }) {
       vectorContext.drawFeature(feature, styles.geoMarker);
     }
     // tell OpenLayers to continue the postcompose animation
-    map.render();
+    map.current.render();
   };
 
   function startAnimation() {
@@ -173,8 +167,8 @@ function Movement({ classes }) {
       speed = 10;
       // hide geoMarker
       geoMarker.setStyle(null);
-      map.on('postcompose', moveFeature);
-      map.render();
+      map.current.on('postcompose', moveFeature);
+      map.current.render();
     }
   }
 
@@ -190,31 +184,11 @@ function Movement({ classes }) {
       .getGeometry()
       .setCoordinates(coord);
     //remove listener
-    map.un('postcompose', moveFeature);
+    map.current.un('postcompose', moveFeature);
   }
 
   return (
     <Fragment>
-      {/* <div
-        ref={container}
-        className={classes.container}
-        style={{
-          display: content === undefined ? 'none' : 'block'
-        }}
-      >
-        <button
-          ref={node => {
-            if (node) {
-              if (node.onclick === null) {
-                node.onclick = onClose;
-              }
-            }
-          }}
-        >
-          x
-        </button>
-        {content}
-      </div> */}
       <div ref={target} className="map" id="map" />
       <button onClick={onClick}>start movement</button>
     </Fragment>
