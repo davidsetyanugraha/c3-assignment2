@@ -149,19 +149,21 @@ export default async function generateMap(
     condition: pointerMove
   });
 
-  map.on('pointermove', function(evt) {
-    const [feature] = evt.target.getFeaturesAtPixel(evt.pixel) || [];
+  if (typeof setContent !== 'undefined') {
+    map.on('pointermove', function(evt) {
+      const [feature] = evt.target.getFeaturesAtPixel(evt.pixel) || [];
 
-    if (feature) {
-      const { freq } = feature.values_;
+      if (feature) {
+        const { freq } = feature.values_;
 
-      if (freq > 0) {
-        setContent(`Gluttony freq: ${feature.values_.freq}`);
-      } else {
-        setContent(undefined);
+        if (freq > 0) {
+          setContent(`Gluttony freq: ${feature.values_.freq}`);
+        } else {
+          setContent(undefined);
+        }
       }
-    }
-  });
+    });
+  }
 
   // For selection.
   // https://openlayers.org/en/latest/examples/vector-tile-selection.html.

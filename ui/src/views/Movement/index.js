@@ -99,14 +99,9 @@ function Movement({ classes }) {
     });
 
     async function getMap() {
-      const newMap = await generateMap(
-        target,
-        undefined,
-        undefined,
-        map.current,
-        undefined,
-        [vectorLayer2]
-      );
+      const newMap = await generateMap(target, undefined, map.current, [
+        vectorLayer2
+      ]);
 
       map.current = newMap;
     }
