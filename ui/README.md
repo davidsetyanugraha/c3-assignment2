@@ -70,4 +70,5 @@ TBD
 
 1. In this folder, `yarn` in your CLI.
 2. `yarn start` to start the development server.
-3. `yarn build` to build everything into an optimized bundle of static page.
+3. `yarn start:server` to start the "backend" server to send the JSON data, area boundaries, statistics, and stuff (apparently we don't have a backend).
+4. `yarn build` to build everything into an optimized bundle of static page.
