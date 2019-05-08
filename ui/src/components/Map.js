@@ -124,26 +124,12 @@ async function getVectorLayer() {
 
 export default async function generateMap(
   target,
-  overlayWrapper,
   setContent,
   oldMap,
-  openlayerOverlay,
   otherLayers = []
 ) {
   const vectorLayer = await getVectorLayer();
   let map;
-  let overlay;
-
-  if (overlayWrapper) {
-    overlay = new Overlay({
-      element: overlayWrapper.current,
-      autoPan: true,
-      autoPanAnimation: {
-        duration: 250
-      }
-    });
-    openlayerOverlay.current = overlay;
-  }
 
   if (!oldMap) {
     map = new Map({
@@ -153,7 +139,6 @@ export default async function generateMap(
         }),
         vectorLayer
       ].concat(otherLayers),
-      overlays: overlay ? [overlay] : [],
       target: target.current,
       view: new View({
         center: victoriaMedian,
@@ -166,9 +151,7 @@ export default async function generateMap(
     condition: pointerMove
   });
 
-  map.on('singleclick', function(evt) {
-    var coordinate = evt.coordinate;
-
+  map.on('pointermove', function(evt) {
     const [feature] = evt.target.getFeaturesAtPixel(evt.pixel) || [];
 
     if (feature) {
@@ -176,7 +159,8 @@ export default async function generateMap(
 
       if (freq > 0) {
         setContent(`Gluttony freq: ${feature.values_.freq}`);
-        overlay.setPosition(coordinate);
+      } else {
+        setContent(undefined);
       }
     }
   });

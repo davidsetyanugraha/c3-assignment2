@@ -5,6 +5,10 @@ import { withStyles } from '@material-ui/core';
 
 const styles = theme => ({
   container: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    zIndex: 1000,
     padding: theme.spacing.unit * 2,
     borderRadius: 10,
     background: 'white'
@@ -14,7 +18,6 @@ const styles = theme => ({
 function App({ classes }) {
   const target = useRef(null);
   const container = useRef(null);
-  const overlay = useRef(null);
   const map = useRef(null);
 
   const [, setState] = useState(0);
@@ -25,60 +28,28 @@ function App({ classes }) {
     setState(1);
 
     async function getMap() {
-      const newMap = await generateMap(
-        target,
-        container,
-        setContent,
-        map.current,
-        undefined
-      );
+      const newMap = await generateMap(target, setContent, map.current);
 
       map.current = newMap;
     }
 
     getMap();
 
-    return () => {
-      target.current = null;
-      container.current = null;
-      // map.current.removeOverlay(overlay.current);
-      // overlay.current.setElement(undefined);
-      // overlay.current = null;
-      map.current.setTarget(undefined);
-      map.current = null;
-    };
+    return () => {};
   }, []);
-
-  function onClose(e) {
-    e.preventDefault();
-    if (overlay.current) {
-      overlay.current.setPosition(undefined);
-      setContent(undefined);
-    }
-  }
 
   return (
     <Fragment>
-      <div
-        ref={container}
-        className={classes.container}
-        style={{
-          display: content === undefined ? 'none' : 'block'
-        }}
-      >
-        {/* <button
-          ref={node => {
-            if (node) {
-              if (node.onclick === null) {
-                node.onclick = onClose;
-              }
-            }
+      {content !== undefined && (
+        <div
+          className={classes.container}
+          style={{
+            display: content === undefined ? 'none' : 'block'
           }}
         >
-          x
-        </button> */}
-        {content}
-      </div>
+          {content}
+        </div>
+      )}
       <div ref={target} className="map" id="map" />
     </Fragment>
   );
