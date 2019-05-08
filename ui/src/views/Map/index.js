@@ -17,7 +17,6 @@ const styles = theme => ({
 
 function App({ classes }) {
   const target = useRef(null);
-  const container = useRef(null);
   const map = useRef(null);
 
   const [, setState] = useState(0);

@@ -10,8 +10,6 @@ import { OSM, Vector as VectorSource } from 'ol/source';
 import { Fill, Stroke, Style } from 'ol/style';
 import Circle from 'ol/geom/Circle.js';
 
-import Overlay from 'ol/Overlay.js';
-
 const victoriaBoundingBox = [
   [140.96190162, -39.19848673],
   [150.03328204, -33.98079743]

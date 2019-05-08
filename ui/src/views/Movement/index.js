@@ -24,7 +24,6 @@ function Movement({ classes }) {
   const map = useRef(null);
 
   const [, setState] = useState(0);
-  const [content, setContent] = useState(undefined);
 
   var locations = [
     [140.44241609, -36.84913974],
@@ -130,7 +129,7 @@ function Movement({ classes }) {
     // }
     startAnimation();
   }
-  console.log(animating);
+
   var animating = false;
   var speed = 10,
     now;
