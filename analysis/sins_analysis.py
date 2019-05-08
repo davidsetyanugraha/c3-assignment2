@@ -37,7 +37,7 @@ userauth1 = "readonly"
 userauth2 = "ween7ighai9gahR6"
 
 # read_file
-geojson = "melbourne_territory.json"
+geojson = "../geojson-files/victoria-without-suburbs.json"
 foodtag = "food_hashtag.txt"
 commonword = "food_common_word.txt"
 
