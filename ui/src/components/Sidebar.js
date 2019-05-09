@@ -38,7 +38,8 @@ const styles = theme => ({
 const routes = [
   { to: '/', name: 'Charts' },
   { to: '/map', name: 'Distribution' },
-  { to: '/movement', name: 'Movement' }
+  { to: '/movement', name: 'Movement' },
+  { to: '/dashboard', name: 'Dashboard' }
 ];
 
 function PermanentDrawerLeft(props) {
