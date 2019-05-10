@@ -19,6 +19,7 @@ const victoriaMedian = fromLonLat(
   ],
   'EPSG:3857'
 );
+const sins = ['sloth', 'greed', 'gluttony', 'wrath', 'lust', 'envy', 'pride'];
 
 export default async function generateMap(
   target,
@@ -49,11 +50,18 @@ export default async function generateMap(
     map.on('pointermove', function(evt) {
       const [feature] = evt.target.getFeaturesAtPixel(evt.pixel) || [];
 
+      console.log(feature);
       if (feature) {
-        const { freq } = feature.values_;
+        const { freqTotal } = feature.values_;
 
-        if (freq > 0) {
-          setContent(`Gluttony freq: ${feature.values_.freq}`);
+        if (freqTotal !== undefined) {
+          setContent(
+            [`Total sins: ${feature.values_.freqTotal}`].concat(
+              feature.values_.sins.map(
+                (sinValue, index) => `${sins[index]}: ${sinValue}`
+              )
+            )
+          );
         } else {
           setContent(undefined);
         }

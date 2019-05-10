@@ -1,7 +1,8 @@
 import React, { useRef, useEffect, useState, Fragment } from 'react';
 
-import generateMap from '../../components/Map';
+import generateMap from './Map';
 import { withStyles } from '@material-ui/core';
+import createVectorLayer from './vectorLayer';
 
 const styles = theme => ({
   container: {
@@ -12,6 +13,9 @@ const styles = theme => ({
     padding: theme.spacing.unit * 2,
     borderRadius: 10,
     background: 'white'
+  },
+  overlayLine: {
+    margin: 0
   }
 });
 
@@ -27,14 +31,10 @@ function App({ classes }) {
     setState(1);
 
     async function getMap() {
-      const x = await fetch(
-        '/nectar/dashboard_source1/_design/summary/_view/sins_per_area?group=true'
-      );
-      const json = await x.json();
-
-      console.log(json);
-
-      const newMap = await generateMap(target, setContent, map.current);
+      const vectorLayer = await createVectorLayer();
+      const newMap = await generateMap(target, setContent, map.current, [
+        vectorLayer
+      ]);
 
       map.current = newMap;
     }
@@ -53,7 +53,13 @@ function App({ classes }) {
             display: content === undefined ? 'none' : 'block'
           }}
         >
-          {content}
+          {Array.isArray(content)
+            ? content.map((line, idx) => (
+                <p className={classes.overlayLine} key={idx}>
+                  {line}
+                </p>
+              ))
+            : content}
         </div>
       )}
       <div ref={target} className="map" id="map" />
