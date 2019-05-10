@@ -34,18 +34,25 @@ vic = couchserver['victoria']
 vicview = vic.view('_design/uniqueUserWithCoords/_view/uniqueUserWithCoordsDoc')
 vicviewchanges = vic.changes(include_docs=True, filter="_view", view="uniqueUserWithCoords/uniqueUserWithCoordsDoc")
 
+#store the userid of already fetched timelines
+processeduserid = []
 
 # create database for user timelines
 dbname = "usertimeline_feed"
 if dbname in couchserver:
     db = couchserver[dbname]
+    #get the list of processeduserids that are already in the
+    try:
+        useridview =db.view('_design/timeline/_view/userlistview', group=True)
+        for row in useridview.rows:
+            processeduserid.append(row["key"])
+    except:
+        # Nothing to be done
+        mprint("error retreiving processed user list")
 else:
     db = couchserver.create(dbname)
 
-
 mprint("Initial data fetch...")
-#store the userid of already fetched timelines
-processeduserid = []
 while True:
     lastvicviewseq = vicviewchanges["last_seq"]
     mprint("Changed data fetched... lastvicviewseq " + lastvicviewseq)
@@ -60,23 +67,26 @@ while True:
     #for item in vicview:
     #    if item.key not in userid:
     #        userid.append(item.key)
-
+    mprint("fetching timeline for "+str(len(userid))+" users.")
     
     for uniqueid in userid:
         timelines = api.user_timeline(user_id=uniqueid, count=200, include_rts=True)
+        try:
+            #used Cursor to fetch more data 3200 supported by twitter
+            for tweet in tweepy.Cursor(api.user_timeline, user_id=uniqueid, include_rts=True, tweet_mode="extended").items():
+            #    print(status.full_text)
+            #for tweet in timelines:
+                tweet = tweet._json
+                if str(tweet['id']) not in db:  # check to avoid duplicates
+                    #this extra key swap done because noticed this API replace "text" with "full_text" so changed the lable to match other interfaces
+                    if "text" not in tweet.keys():
+                        tweet["text"] = tweet["full_text"]
+                        tweet.pop("full_text")
+                    db[str(tweet['id'])] = tweet
+            # Add user to already processed list
+        except tweepy.TweepError as ex:
+            mprint("Exception while getting timeline for User:"+uniqueid+", Reason: "+ex.reason+". Skipping..")
 
-        #used Cursor to fetch more data 3200 supported by twitter
-        for tweet in tweepy.Cursor(api.user_timeline, user_id=uniqueid, include_rts=True, tweet_mode="extended").items():
-        #    print(status.full_text)
-        #for tweet in timelines:
-            tweet = tweet._json
-            if str(tweet['id']) not in db:  # check to avoid duplicates
-                #this extra key swap done because noticed this API replace "text" with "full_text" so changed the lable to match other interfaces
-                if "text" not in tweet.keys():
-                    tweet["text"] = tweet["full_text"]
-                    tweet.pop("full_text")
-                db[str(tweet['id'])] = tweet
-        # Add user to already processed list
         processeduserid.append(uniqueid)
         time.sleep(100)  # Sleep for 100 seconds, may increase if needed to avoid twitter block
 
