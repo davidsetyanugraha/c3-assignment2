@@ -27,6 +27,13 @@ function App({ classes }) {
     setState(1);
 
     async function getMap() {
+      const x = await fetch(
+        '/nectar/dashboard_source1/_design/summary/_view/sins_per_area?group=true'
+      );
+      const json = await x.json();
+
+      console.log(json);
+
       const newMap = await generateMap(target, setContent, map.current);
 
       map.current = newMap;

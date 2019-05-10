@@ -1,5 +1,5 @@
 const http = require('http');
-const json = require('../../../geojson-files/victoria-without-suburbs.json');
+const json = require('../../../geojson-files/LGA_GeoData.json');
 const statResult = require('../../../analysis/output/stat_area.json');
 const favoriteResult = require('../../../analysis/output/agg_favorite_cat.json');
 
