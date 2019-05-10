@@ -85,58 +85,46 @@ function Movement({ classes }) {
     // Force update.
     setState(1);
 
-    // var vectorLayer2 = new VectorLayer({
-    //   source: new VectorSource({
-    //     features: [routeFeature, geoMarker, startMarker, endMarker]
-    //   }),
-    //   style: function(feature) {
-    //     // hide geoMarker if animation is active
-    //     if (animating && feature.get('type') === 'geoMarker') {
-    //       return null;
-    //     }
-    //     return styles[feature.get('type')];
-    //   }
-    // });
-
     async function getMap() {
       const x = await fetch('/nectar/coordinates/_all_docs?include_docs=True');
       const json = await x.json();
 
-      var locations = [];
+      const layers = [];
 
       json.rows.map(({ doc }) => {
+        const locations = [];
         const { startlon, startlat, endlon, endlat } = doc;
-        console.log(startlat);
+
         locations.push([startlon, startlat]);
         locations.push([endlon, endlat]);
+
+        const route = new LineString(locations).transform(
+          'EPSG:4326',
+          'EPSG:3857'
+        );
+
+        const routeFeature = new Feature({
+          type: 'route',
+          geometry: route
+        });
+
+        const vectorLayer2 = new VectorLayer({
+          source: new VectorSource({
+            features: [routeFeature]
+          }),
+          style: function(feature) {
+            // hide geoMarker if animation is active
+            // if (animating && feature.get('type') === 'geoMarker') {
+            //   return null;
+            // }
+            return styles[feature.get('type')];
+          }
+        });
+
+        layers.push(vectorLayer2);
       });
 
-      var route = new LineString(locations).transform('EPSG:4326', 'EPSG:3857');
-
-      var routeCoords = route.getCoordinates();
-      // var routeLength = routeCoords.length;
-      console.log(routeCoords);
-      var routeFeature = new Feature({
-        type: 'route',
-        geometry: route
-      });
-
-      var vectorLayer2 = new VectorLayer({
-        source: new VectorSource({
-          features: [routeFeature]
-        }),
-        style: function(feature) {
-          // hide geoMarker if animation is active
-          // if (animating && feature.get('type') === 'geoMarker') {
-          //   return null;
-          // }
-          return styles[feature.get('type')];
-        }
-      });
-
-      const newMap = await generateMap(target, undefined, map.current, [
-        vectorLayer2
-      ]);
+      const newMap = await generateMap(target, undefined, map.current, layers);
 
       map.current = newMap;
     }

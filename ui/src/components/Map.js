@@ -126,10 +126,17 @@ export default async function generateMap(
   oldMap,
   otherLayers = []
 ) {
-  const vectorLayer = await getVectorLayer();
   let map;
 
   if (!oldMap) {
+    const vectorLayer = await getVectorLayer();
+    const layers = [
+      new TileLayer({
+        source: new OSM()
+      }),
+      vectorLayer
+    ].concat(otherLayers);
+
     map = new Map({
       layers: [
         new TileLayer({
