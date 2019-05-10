@@ -103,6 +103,11 @@ function Movement({ classes }) {
         vectorLayer2
       ]);
 
+      const x = await fetch('/nectar/coordinates/_all_docs?include_docs=True');
+      const json = await x.json();
+
+      console.log(json);
+
       map.current = newMap;
     }
 
