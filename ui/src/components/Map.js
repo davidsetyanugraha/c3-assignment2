@@ -141,8 +141,8 @@ export default async function generateMap(
       layers: [
         new TileLayer({
           source: new OSM()
-        }),
-        vectorLayer
+        })
+        // vectorLayer
       ].concat(otherLayers),
       target: target.current,
       view: new View({
