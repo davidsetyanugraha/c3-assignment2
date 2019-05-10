@@ -70,8 +70,8 @@ while True:
     mprint("fetching timeline for "+str(len(userid))+" users.")
     
     for uniqueid in userid:
-        timelines = api.user_timeline(user_id=uniqueid, count=200, include_rts=True)
         try:
+            timelines = api.user_timeline(user_id=uniqueid, count=200, include_rts=True)
             #used Cursor to fetch more data 3200 supported by twitter
             for tweet in tweepy.Cursor(api.user_timeline, user_id=uniqueid, include_rts=True, tweet_mode="extended").items():
             #    print(status.full_text)
