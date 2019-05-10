@@ -86,14 +86,16 @@ function Movement({ classes }) {
     setState(1);
 
     async function getMap() {
-      const x = await fetch('/nectar/coordinates/_all_docs?include_docs=True');
+      const x = await fetch(
+        '/nectar/dashboard_source1/_design/summary/_view/coor_to_coor?group=true'
+      );
       const json = await x.json();
 
       const layers = [];
 
-      json.rows.map(({ doc }) => {
+      json.rows.map(({ key }) => {
         const locations = [];
-        const { startlon, startlat, endlon, endlat } = doc;
+        const [startlon, startlat, endlon, endlat] = key;
 
         locations.push([startlon, startlat]);
         locations.push([endlon, endlat]);

@@ -26,8 +26,8 @@ const victoriaMedian = fromLonLat(
 
 async function getVectorLayer() {
   const [response, area] = await Promise.all([
-    fetch('http://localhost:3001'),
-    fetch('http://localhost:3001/stat')
+    fetch('/local-server'),
+    fetch('/local-server/stat')
   ]);
   const territory = await response.json();
   const results = await area.json();
@@ -129,12 +129,12 @@ export default async function generateMap(
   let map;
 
   if (!oldMap) {
-    const vectorLayer = await getVectorLayer();
+    // const vectorLayer = await getVectorLayer();
     const layers = [
       new TileLayer({
         source: new OSM()
-      }),
-      vectorLayer
+      })
+      // vectorLayer
     ].concat(otherLayers);
 
     map = new Map({
