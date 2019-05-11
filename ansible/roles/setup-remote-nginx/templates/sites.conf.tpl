@@ -15,7 +15,8 @@ server {
 
     # Example forward proxy.
     location /nectar/ {
-        proxy_pass http://172.26.37.235:5984/;
+        # We use localhost because we don't know the exact IP address of the instances.
+        proxy_pass http://localhost:5984/;
         # If you want to connect from HTTP to HTTPS, you probably need this.
         proxy_ssl_server_name on;
         proxy_http_version 1.1;
