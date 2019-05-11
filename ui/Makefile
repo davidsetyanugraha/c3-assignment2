@@ -6,9 +6,9 @@ build: deps create-symbolic-link
 
 create-symbolic-link:
 	rm -f public/LGA_GeoData.json public/stat_area.json public/agg_favorite_cat.json
-	ln -s $(dirname $(pwd))/geojson-files/LGA_GeoData.json $(pwd)/public/LGA_GeoData.json
-	ln -s $(dirname $(pwd))/analysis/output/stat_area.json $(pwd)/public/stat_area.json
-	ln -s $(dirname $(pwd))/analysis/output/agg_favorite_cat.json $(pwd)/public/agg_favorite_cat.json
+	ln -s $(shell dirname $(pwd))/geojson-files/LGA_GeoData.json $(shell pwd)/public/LGA_GeoData.json
+	ln -s $(shell dirname $(pwd))/analysis/output/stat_area.json $(shell pwd)/public/stat_area.json
+	ln -s $(shell dirname $(pwd))/analysis/output/agg_favorite_cat.json $(shell pwd)/public/agg_favorite_cat.json
 
 docker-ssh: 
 	make -C docker docker-ssh
