@@ -1,4 +1,7 @@
-build:
+deps:
+	yarn
+
+build: deps
 	yarn build
 
 docker-ssh: 
@@ -9,4 +12,4 @@ docker-build: build
 	cp ../build build/
 	docker build --no-cache -f Dockerfile -t exampleapp:latest .
 
-PHONY: build docker-ssh docker-run docker-build
+PHONY: build docker-ssh docker-run docker-build deps
