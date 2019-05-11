@@ -7,6 +7,7 @@ import createVectorLayer from './vectorLayer';
 const styles = theme => ({
   container: {
     position: 'absolute',
+    minWidth: 250,
     top: 0,
     right: 0,
     zIndex: 1000,

@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { fromLonLat } from 'ol/proj.js';
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -5,6 +7,8 @@ import { Tile as TileLayer } from 'ol/layer';
 import Select from 'ol/interaction/Select.js';
 import { pointerMove } from 'ol/events/condition.js';
 import { OSM } from 'ol/source';
+
+import titleCase from 'title-case';
 
 const victoriaBoundingBox = [
   [140.96190162, -39.19848673],
@@ -50,16 +54,21 @@ export default async function generateMap(
     map.on('pointermove', function(evt) {
       const [feature] = evt.target.getFeaturesAtPixel(evt.pixel) || [];
 
-      console.log(feature);
       if (feature) {
-        const { freqTotal } = feature.values_;
+        const { freqTotal, lga_name } = feature.values_;
 
         if (freqTotal !== undefined) {
           setContent(
-            [`Total sins: ${feature.values_.freqTotal}`].concat(
-              feature.values_.sins.map(
-                (sinValue, index) => `${sins[index]}: ${sinValue}`
-              )
+            [
+              <h4 style={{ marginTop: 0 }}>
+                {titleCase(lga_name)} ({feature.values_.freqTotal} sins)
+              </h4>
+            ].concat(
+              feature.values_.sins.map((sinValue, index) => (
+                <span>
+                  <b>{sins[index]}</b>: {sinValue}
+                </span>
+              ))
             )
           );
         } else {
