@@ -23,3 +23,7 @@ yarn-debug.log*
 yarn-error.log*
 
 *.tar.gz
+
+public/agg_favorite_cat.json
+public/LGA_GeoData.json
+public/stat_area.json
