@@ -2,8 +2,7 @@ import React, { useRef, useEffect, useState, Fragment } from 'react';
 import Feature from 'ol/Feature';
 import { Vector as VectorLayer } from 'ol/layer';
 import { Vector as VectorSource } from 'ol/source';
-import { Fill, Stroke, Style, Icon, Circle as CircleStyle } from 'ol/style';
-import Point from 'ol/geom/Point.js';
+import { Stroke, Style } from 'ol/style';
 import LineString from 'ol/geom/LineString.js';
 
 import generateMap from './Map';
@@ -46,7 +45,7 @@ function Movement({ classes }) {
 
       const layers = [];
 
-      json.rows.map(({ key }) => {
+      json.rows.forEach(({ key }) => {
         const locations = [];
         const [startlon, startlat, endlon, endlat] = key;
 
