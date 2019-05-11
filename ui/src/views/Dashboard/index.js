@@ -17,7 +17,7 @@ function ChartView() {
 
   useEffect(() => {
     async function populateData() {
-      const response = await fetch('http://localhost:3001/agg-fav');
+      const response = await fetch('/local-server/agg-fav');
       const json = await response.json();
 
       const mappedData = Object.keys(json).map(key => {
@@ -37,45 +37,42 @@ function ChartView() {
     <div>
       <h2>Untitled</h2>
 
-      <Grid
-        >
-      <form>
-
+      <Grid>
+        <form>
           Direction:
           <select>
             <option value="from">From</option>
             <option value="to">To</option>
           </select>
-
-
-        <div>
-          Location Level:
-          <select>
-            <option value="city">City</option>
-            <option value="street">Street</option>
-          </select>
-        </div>
-
-        <div>
-          Specific Location:
-          <select>
-            <option value="dummy1">dummy1(auto populated from location level)</option>
-            <option value="dummy2">dummy2(auto populated from location level)</option>
-          </select>
-        </div>
-
-        <div>
-          Value:
-          <select>
-            <option value="distance">Distance</option>
-            <option value="time">Time</option>
-            <option value="sins">Sins</option>
-            <option value="liveable">Liveable</option>
-          </select>
-        </div>
-
-        <input type="submit" value="Submit" />
-      </form>
+          <div>
+            Location Level:
+            <select>
+              <option value="city">City</option>
+              <option value="street">Street</option>
+            </select>
+          </div>
+          <div>
+            Specific Location:
+            <select>
+              <option value="dummy1">
+                dummy1(auto populated from location level)
+              </option>
+              <option value="dummy2">
+                dummy2(auto populated from location level)
+              </option>
+            </select>
+          </div>
+          <div>
+            Value:
+            <select>
+              <option value="distance">Distance</option>
+              <option value="time">Time</option>
+              <option value="sins">Sins</option>
+              <option value="liveable">Liveable</option>
+            </select>
+          </div>
+          <input type="submit" value="Submit" />
+        </form>
       </Grid>
 
       <BarChart

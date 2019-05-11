@@ -43,6 +43,10 @@ export default async function generateMap(
         zoom
       })
     });
+  } else {
+    map = oldMap;
+
+    otherLayers.forEach(layer => map.addLayer(layer));
   }
 
   if (typeof setContent !== 'undefined') {

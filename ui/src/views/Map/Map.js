@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { fromLonLat } from 'ol/proj.js';
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -5,6 +7,8 @@ import { Tile as TileLayer } from 'ol/layer';
 import Select from 'ol/interaction/Select.js';
 import { pointerMove } from 'ol/events/condition.js';
 import { OSM } from 'ol/source';
+
+import titleCase from 'title-case';
 
 const victoriaBoundingBox = [
   [140.96190162, -39.19848673],
@@ -19,6 +23,7 @@ const victoriaMedian = fromLonLat(
   ],
   'EPSG:3857'
 );
+const sins = ['sloth', 'greed', 'gluttony', 'wrath', 'lust', 'envy', 'pride'];
 
 export default async function generateMap(
   target,
@@ -50,10 +55,22 @@ export default async function generateMap(
       const [feature] = evt.target.getFeaturesAtPixel(evt.pixel) || [];
 
       if (feature) {
-        const { freq } = feature.values_;
+        const { freqTotal, lga_name } = feature.values_;
 
-        if (freq > 0) {
-          setContent(`Gluttony freq: ${feature.values_.freq}`);
+        if (freqTotal !== undefined) {
+          setContent(
+            [
+              <h4 style={{ marginTop: 0 }}>
+                {titleCase(lga_name)} ({feature.values_.freqTotal} sins)
+              </h4>
+            ].concat(
+              feature.values_.sins.map((sinValue, index) => (
+                <span>
+                  <b>{sins[index]}</b>: {sinValue}
+                </span>
+              ))
+            )
+          );
         } else {
           setContent(undefined);
         }
