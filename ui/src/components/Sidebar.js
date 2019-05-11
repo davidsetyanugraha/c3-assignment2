@@ -39,6 +39,7 @@ const routes = [
   { to: '/', name: 'Charts' },
   { to: '/map', name: 'Distribution' },
   { to: '/movement', name: 'Movement' },
+  { to: '/movement-vic', name: 'Movement (VIC)' },
   { to: '/dashboard', name: 'Dashboard' }
 ];
 

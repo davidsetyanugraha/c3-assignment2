@@ -5,6 +5,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Chart from '../views/Chart';
 import MapView from '../views/Map';
 import Movement from '../views/Movement';
+import MovementVic from '../views/MovementVic';
 import Dashboard from '../views/Dashboard';
 
 const styles = theme => ({
@@ -20,6 +21,7 @@ function Routes(props) {
         <Route path="/" exact component={Chart} />
         <Route path="/map" component={MapView} />
         <Route path="/movement" component={Movement} />
+        <Route path="/movement-vic" component={MovementVic} />
         <Route path="/dashboard" component={Dashboard} />
       </Switch>
     </div>
