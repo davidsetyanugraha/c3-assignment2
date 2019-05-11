@@ -5,11 +5,10 @@ build: deps
 	yarn build
 
 docker-ssh: 
-	docker exec -it optimistic_mcnulty /bin/bash
+	make -C docker docker-ssh
 docker-run: 
-	docker run -p 5000 -it exampleapp:latest /bin/bash
+	make -C docker docker-run
 docker-build: build
-	cp ../build build/
-	docker build --no-cache -f Dockerfile -t exampleapp:latest .
+	make -C docker docker-build
 
 PHONY: build docker-ssh docker-run docker-build deps
