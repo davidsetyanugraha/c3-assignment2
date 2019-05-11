@@ -41,7 +41,7 @@ const routes = [
   { to: '/movement', name: 'Movement' },
   { to: '/movement-vic', name: 'Movement (VIC)' },
   { to: '/dashboard', name: 'Dashboard' },
-  { to: '/local-server/travel-dest', name: 'Travels', out: true }
+  { to: '/travel-dest.html', name: 'Travels', out: true }
 ];
 
 function PermanentDrawerLeft(props) {
