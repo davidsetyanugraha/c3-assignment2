@@ -14,7 +14,7 @@ function ChartView() {
 
   useEffect(() => {
     async function populateData() {
-      const response = await fetch('http://localhost:3001/agg-fav');
+      const response = await fetch('/local-server/agg-fav');
       const json = await response.json();
 
       const mappedData = Object.keys(json).map(key => {

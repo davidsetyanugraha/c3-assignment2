@@ -1,17 +1,22 @@
 import React, { useRef, useEffect, useState, Fragment } from 'react';
 
-import generateMap from '../../components/Map';
+import generateMap from './Map';
 import { withStyles } from '@material-ui/core';
+import createVectorLayer from './vectorLayer';
 
 const styles = theme => ({
   container: {
     position: 'absolute',
+    minWidth: 250,
     top: 0,
     right: 0,
     zIndex: 1000,
     padding: theme.spacing.unit * 2,
     borderRadius: 10,
     background: 'white'
+  },
+  overlayLine: {
+    margin: 0
   }
 });
 
@@ -27,7 +32,10 @@ function App({ classes }) {
     setState(1);
 
     async function getMap() {
-      const newMap = await generateMap(target, setContent, map.current);
+      const vectorLayer = await createVectorLayer();
+      const newMap = await generateMap(target, setContent, map.current, [
+        vectorLayer
+      ]);
 
       map.current = newMap;
     }
@@ -46,7 +54,13 @@ function App({ classes }) {
             display: content === undefined ? 'none' : 'block'
           }}
         >
-          {content}
+          {Array.isArray(content)
+            ? content.map((line, idx) => (
+                <p className={classes.overlayLine} key={idx}>
+                  {line}
+                </p>
+              ))
+            : content}
         </div>
       )}
       <div ref={target} className="map" id="map" />

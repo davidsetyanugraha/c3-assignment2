@@ -11,6 +11,14 @@ module.exports = function(app) {
         '/nectar': ''
       },
       changeOrigin: true
+    },
+    '/local-server': {
+      // We setup dynamic proxy here so we can edit with environment variables.
+      target: 'http://localhost:3001',
+      pathRewrite: {
+        '/local-server': ''
+      },
+      changeOrigin: true
     }
   };
 

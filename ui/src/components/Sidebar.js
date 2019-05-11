@@ -39,7 +39,9 @@ const routes = [
   { to: '/', name: 'Charts' },
   { to: '/map', name: 'Distribution' },
   { to: '/movement', name: 'Movement' },
-  { to: '/dashboard', name: 'Dashboard' }
+  { to: '/movement-vic', name: 'Movement (VIC)' },
+  { to: '/dashboard', name: 'Dashboard' },
+  { to: '/local-server/travel-dest', name: 'Travels', out: true }
 ];
 
 function PermanentDrawerLeft(props) {
@@ -57,16 +59,18 @@ function PermanentDrawerLeft(props) {
         anchor="left"
       >
         <List>
-          {routes.map(({ to, name }, index) => (
-            <Link to={to} key={name}>
-              <ListItem button>
-                <ListItemIcon>
-                  {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                </ListItemIcon>
-                <ListItemText primary={name} />
-              </ListItem>
-            </Link>
-          ))}
+          {routes.map(({ to, name, out }, index) => {
+            return (
+              <Link to={to} key={name} target={out ? '_blank' : undefined}>
+                <ListItem button>
+                  <ListItemIcon>
+                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+                  </ListItemIcon>
+                  <ListItemText primary={name} />
+                </ListItem>
+              </Link>
+            );
+          })}
         </List>
       </Drawer>
     </div>
