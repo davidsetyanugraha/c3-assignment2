@@ -44,7 +44,7 @@ function MovementVic({ classes }) {
         let json = await x.json();
 
         // imit for now.
-        json.rows = json.rows.slice(0, 2500);
+        // json.rows = json.rows.slice(0, 2500);
 
         const ranges = {};
         const initialSelected = selectedRanges || [];
