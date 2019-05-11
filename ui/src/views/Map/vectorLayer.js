@@ -17,7 +17,7 @@ const countTotal = obj => {
 export default async function createVectorLayer() {
   const [response, area] = await Promise.all([
     // Area boundary.
-    fetch('/local-server'),
+    fetch('/LGA_GeoData.json'),
     // Data.
     fetch(
       '/nectar/dashboard_source1/_design/summary/_view/sins_per_area?group=true'
