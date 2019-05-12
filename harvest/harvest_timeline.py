@@ -10,12 +10,14 @@ def mprint(msg):
     print(time.strftime("%a, %d %b %Y %H:%M:%S +0000") + " " + msg)
 
 # Database Configuration
-IP = '172.26.38.57'
-BASE_URL = 'http://172.26.38.57:5984'
+#IP = '172.26.38.57'
+IP = 'localhost'  # (Assuming the harvester is running in the same instance as couchdb, which is the current setup)
+#BASE_URL = 'http://172.26.38.57:5984'
+BASE_URL = 'http://localhost:5984'
 USERNAME = 'admin'
 PASSWORD = 'password'
 
-couchserver = couchdb.Server(BASE_URL)
+#couchserver = couchdb.Server(BASE_URL)
 couchserver = couchdb.Server("http://%s:%s@%s:5984/" % (USERNAME, PASSWORD, IP))
 
 # API Twitter Configuration
@@ -85,7 +87,7 @@ while True:
                     db[str(tweet['id'])] = tweet
             # Add user to already processed list
         except tweepy.TweepError as ex:
-            mprint("Exception while getting timeline for User:"+uniqueid+", Reason: "+ex.reason+". Skipping..")
+            mprint("Exception while getting timeline for User:"+str(uniqueid)+", Reason: "+ex.reason+". Skipping..")
 
         processeduserid.append(uniqueid)
         time.sleep(100)  # Sleep for 100 seconds, may increase if needed to avoid twitter block

@@ -35,145 +35,145 @@ function ChartView({ classes }) {
 
   useEffect(() => {
     async function populateData() {
-      console.log('change location');
-      console.log(
-        'value = ' +
-          value +
-          ' ,direction = ' +
-          direction +
-          ' ,level = ' +
-          level +
-          ' ,specific = ' +
-          specific
-      );
       let url = '';
 
-      if (value === 'distance') {
-        url =
-          '/nectar/dashboard_source1/_design/summary/_view/mindistance?group=true';
-      } else if (value === 'time') {
-        url =
-          '/nectar/dashboard_source1/_design/summary/_view/mintimediff?group=true';
-      } else if (value === 'sins') {
-        url =
-          '/nectar/dashboard_source1/_design/summary/_view/sumsins?group=true';
-      } else if (value === 'liveable') {
-        url =
-          '/nectar/dashboard_source1/_design/summary/_view/mindistance?group=true';
+      if (value === "distance") {
+        url = '/nectar/dashboard_source1/_design/summary/_view/mindistance?group=true';
+      } else if (value === "time") {
+        url = '/nectar/dashboard_source1/_design/summary/_view/mintimediff?group=true';
+      } else if (value === "sins") {
+        url = '/nectar/dashboard_source1/_design/summary/_view/sumsins?group=true';
+      } else if (value === "liveable") {
+        url = '/nectar/dashboard_source1/_design/summary/_view/mindistance?group=true';
       }
+      console.log("set new mapped data");
+      console.log("value = " + value + " ,direction = " + direction + " ,level = " + level + " ,specific = " + specific );
 
       const response = await fetch(url);
       const jres = await response.json();
-      const json = await processData(jres.rows);
+      const json = processData(jres.rows);
 
-      const mappedData = Object.keys(json).map(key => {
+      let mappedData = Object.keys(json).map(key => {
         return {
           name: key,
           value: json[key]
         };
       });
+      mappedData.sort( compare );
+      mappedData.reverse();
+      mappedData = getNFirst(mappedData, 5);//
+
+      console.log("new mapped data");
+      console.log(mappedData);
+      
+
 
       setData(mappedData);
     }
 
-    async function processData(json) {
+    function getNFirst(mappedData, n) {
+      let result = [];
+      if (mappedData.length >= n) {
+        for (var i = 0; i < n; i++) {
+          result.push(mappedData[i]);
+        }
+      } else {
+        result = mappedData;
+      }
+      return result;
+    }
+
+    function processData(json) {
       let results = [];
 
-      json.forEach(e => {
+      json.forEach((e) => {
         let from = e.key[0];
         let to = e.key[1];
         let val;
-
-        if (value === 'distance') {
-          val = e.value.min;
-        } else if (value === 'time') {
-          val = e.value.min;
-        } else if (value === 'sins') {
-          val = e.value.sum;
-        } else if (value === 'liveable') {
-          val = e.value.sum;
+        
+        if (value === "distance") {
+          val = e.value.min; 
+        } else if (value === "time") {
+          val = e.value.min; 
+        } else if (value === "sins") {
+          val = e.value.sum; 
+        } else if (value === "liveable") {
+          val = e.value.sum; 
         }
 
-        if (direction === 'from') {
-          results[from] = val;
-        } else if (direction === 'to') {
+        if ((direction === "from") & (from === specific)) {
           results[to] = val;
+        } else if ((direction === "to") & (to === specific)){
+          results[from] = val;
         }
       });
 
       return results;
     }
 
+    function compare( a, b ) {
+      if ( a.value < b.value ){
+        return -1;
+      }
+      if ( a.value > b.value ){
+        return 1;
+      }
+      return 0;
+    }
+
     populateData();
-  }, [specific]);
+
+  }, [direction,level,specific,value]);
 
   const [location, setLocation] = useState([]);
 
   useEffect(() => {
     async function fetchLocations(direction, level) {
-      let url = '';
-      if ((direction === 'from') & (level === 'city')) {
-        url =
-          '/nectar/dashboard_source1/_design/summary/_view/fromCity?group=true';
-      } else if ((direction === 'to') & (level === 'city')) {
-        url =
-          '/nectar/dashboard_source1/_design/summary/_view/toCity?group=true';
+      let url = "";
+      if ((direction === "from") & (level === "city")) {
+        url = '/nectar/dashboard_source1/_design/summary/_view/fromCity?group=true';
+      } else if ((direction === "to") & (level === "city")) {
+        url = '/nectar/dashboard_source1/_design/summary/_view/toCity?group=true';
       }
 
-      console.log('calling: ' + url);
+      console.log("calling: " + url);
       const response = await fetch(url);
       if (response.ok) {
-        const json = await response.json();
+        const json = await response.json();        
         const data = json.rows;
         setSpecific(data[0].key);
         setLocation(data);
       } else {
-        alert('HTTP-Error: ' + response.status);
+        alert("HTTP-Error: " + response.status);
       }
     }
 
-    fetchLocations(direction, level);
-  }, [direction, level]);
+    fetchLocations(direction,level);
+  }, [direction,level]);
 
   function generateLocations() {
     // let sampleData = [
     //   {"key":"YARRIAMBIACK","value":2}
     //   ];
 
-    let locations = [];
+    let locations = [];  
 
-    if ((direction === 'from') & (level === 'city')) {
-      location.forEach(e => {
-        locations.push(
-          <MenuItem key={e.key} value={e.key}>
-            {' '}
-            {e.key}{' '}
-          </MenuItem>
-        );
+    if ((direction === "from") & (level === "city")) {
+      location.forEach((e) => {
+        locations.push(<option key= {e.key} value={e.key}> {e.key} </option>);
       });
-    } else if ((direction === 'to') & (level === 'city')) {
-      location.forEach(e => {
-        locations.push(
-          <MenuItem key={e.key} value={e.key}>
-            {' '}
-            {e.key}{' '}
-          </MenuItem>
-        );
+    } else if ((direction === "to") & (level === "city")) {
+      location.forEach((e) => {
+        locations.push(<option key= {e.key} value={e.key}> {e.key} </option>);
       });
     }
 
     return locations;
-  }
-
-  function handleSubmit(event) {
-    alert('Request was submitted: ' + specific);
-    setSpecific(specific);
-    event.preventDefault();
-  }
+  }  
 
   return (
     <div>
-      <h2>Most Travel Distance Based on Tweets in a City</h2>
+      <h2>Dashboard</h2>
       <form className={classes.form} onSubmit={handleSubmit}>
         <Grid container spacing={16}>
           <Grid item xs={2}>
@@ -250,6 +250,8 @@ function ChartView({ classes }) {
           </Grid>
         </Grid>
       </form>
+
+      <h2>Top 5 {level} {direction} {specific} by {value}</h2>
 
       <div className={classes.chart}>
         <BarChart

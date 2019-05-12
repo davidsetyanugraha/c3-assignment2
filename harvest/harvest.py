@@ -14,19 +14,36 @@ import tweepy
 import requests
 import json
 import time
+from queue import Queue
+from threading import Thread
 
 # Listener to catch all stream from Twitter API
 class MyStreamListener(tweepy.StreamListener):
-    def __init__(self):
+    def __init__(self, q = Queue()):
         self.last_report_time = time.time()
         self.success_insert = 0
         self.error = 0
         self.duplicate_error = 0
+        # Below added to resolve the "Connection broken: IncompleteRead" exception that kept occuring from time to time
+        # based on online search disconnect could be due to network issues or a client reading too slowly, to avoid
+        # the slow processing/not keeping up with the stream following the suggested answer in below thread
+        # https://stackoverflow.com/questions/48034725/tweepy-connection-broken-incompleteread-best-way-to-handle-exception-or-can
+        self.q = q
         super(MyStreamListener, self).__init__()
+        for i in range(4):
+            t = Thread(target=self.process_q)
+            t.daemon = True
+            t.start()
+
+    def process_q(self):
+        while True:
+            self.q.get()
+            self.q.task_done()
+
 
     def on_status(self, status):
         self.insertDB(status)
-        if (time.time() - self.last_report_time) > 100:
+        if (time.time() - self.last_report_time) > 600:
             print(time.strftime("%a, %d %b %Y %H:%M:%S +0000")+" Statistics from last report time: "
                   + str(self.success_insert)+" Tweets Added, "+str(self.duplicate_error)+" Reject Duplicate, "
                   + str(self.error)+" Rejected due to error.")
@@ -68,7 +85,9 @@ class MyStreamListener(tweepy.StreamListener):
 
 
 # Database Connection Configuration
-BASE_URL = 'http://172.26.38.57:5984'
+#BASE_URL = 'http://172.26.38.57:5984'
+# Put on the assumption that the harvester will run in the same instance where couchdb is hosted
+BASE_URL = 'http://localhost:5984'
 USERNAME = 'admin'
 PASSWORD = 'password'
 db = requests.Session()
@@ -92,5 +111,13 @@ GEOBOX_VICTORIA = [
     150.03328204, -33.98079743,
 ]
 
-# Run the Streaming
-myStream.filter(locations=GEOBOX_VICTORIA)
+# Run the Streaming continuously and reattempt incase of exception
+while True:
+    try:
+        myStream.filter(locations=GEOBOX_VICTORIA)
+    except Exception as ex:
+        print(time.strftime("%a, %d %b %Y %H:%M:%S +0000") + " Exception in stream filter, retrying")
+        print(ex)
+        #there will be some missing tweets between recornnect, but this is not critical for this implementation
+        time.sleep(100)
+        continue
