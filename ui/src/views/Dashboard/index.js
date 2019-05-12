@@ -14,41 +14,59 @@ function ChartView() {
   const [level, setLevel] = useState("city");
   const [specific, setSpecific] = useState("");
   const [value, setValue] = useState("distance");
-
   const [data, setData] = useState([]);
-  const [chart, setChart] = useState([]);
 
   useEffect(() => {
     async function populateData() {
-      console.log("change location");
-      console.log("value = " + value + " ,direction = " + direction + " ,level = " + level + " ,specific = " + specific );
       let url = '';
 
-      if (value == "distance") {
+      if (value === "distance") {
         url = '/nectar/dashboard_source1/_design/summary/_view/mindistance?group=true';
-      } else if (value == "time") {
+      } else if (value === "time") {
         url = '/nectar/dashboard_source1/_design/summary/_view/mintimediff?group=true';
-      } else if (value == "sins") {
+      } else if (value === "sins") {
         url = '/nectar/dashboard_source1/_design/summary/_view/sumsins?group=true';
-      } else if (value == "liveable") {
+      } else if (value === "liveable") {
         url = '/nectar/dashboard_source1/_design/summary/_view/mindistance?group=true';
       }
+      console.log("set new mapped data");
+      console.log("value = " + value + " ,direction = " + direction + " ,level = " + level + " ,specific = " + specific );
 
       const response = await fetch(url);
       const jres = await response.json();
-      const json = await processData(jres.rows);
+      const json = processData(jres.rows);
 
-      const mappedData = Object.keys(json).map(key => {
+      let mappedData = Object.keys(json).map(key => {
         return {
           name: key,
           value: json[key]
         };
       });
+      mappedData.sort( compare );
+      mappedData.reverse();
+      mappedData = getNFirst(mappedData, 5);//
+
+      console.log("new mapped data");
+      console.log(mappedData);
+      
+
 
       setData(mappedData);
     }
 
-    async function processData(json) {
+    function getNFirst(mappedData, n) {
+      let result = [];
+      if (mappedData.length >= n) {
+        for (var i = 0; i < n; i++) {
+          result.push(mappedData[i]);
+        }
+      } else {
+        result = mappedData;
+      }
+      return result;
+    }
+
+    function processData(json) {
       let results = [];
 
       json.forEach((e) => {
@@ -66,18 +84,29 @@ function ChartView() {
           val = e.value.sum; 
         }
 
-        if (direction === "from") {
-          results[from] = val;
-        } else if (direction === "to") {
+        if ((direction === "from") & (from === specific)) {
           results[to] = val;
+        } else if ((direction === "to") & (to === specific)){
+          results[from] = val;
         }
       });
 
       return results;
     }
 
+    function compare( a, b ) {
+      if ( a.value < b.value ){
+        return -1;
+      }
+      if ( a.value > b.value ){
+        return 1;
+      }
+      return 0;
+    }
+
     populateData();
-  }, [specific]);
+
+  }, [direction,level,specific,value]);
 
   const [location, setLocation] = useState([]);
 
@@ -125,16 +154,10 @@ function ChartView() {
     return locations;
   }  
 
-  function handleSubmit(event) {
-    alert('Request was submitted: ' + specific);
-    setSpecific(specific);
-    event.preventDefault();
-  }
-
   return (
     <div>
-      <h2>Untitled</h2>
-      <form onSubmit={handleSubmit}>
+      <h2>Dashboard</h2>
+
         <div>
           Direction:
           <select value={direction} onChange={e => setDirection(e.target.value)}>
@@ -167,8 +190,8 @@ function ChartView() {
             <option value="liveable">Liveable</option>
           </select>
         </div>
-        <input type="submit" value="Submit" />
-      </form>
+      
+      <h2>Top 5 {level} {direction} {specific} by {value}</h2>
 
       <BarChart
         width={800}
