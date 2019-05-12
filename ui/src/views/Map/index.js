@@ -55,11 +55,7 @@ function App({ classes }) {
           }}
         >
           {Array.isArray(content)
-            ? content.map((line, idx) => (
-                <p className={classes.overlayLine} key={idx}>
-                  {line}
-                </p>
-              ))
+            ? content.map((line, idx) => <Fragment key={idx}>{line}</Fragment>)
             : content}
         </div>
       )}
