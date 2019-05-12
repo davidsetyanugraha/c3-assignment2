@@ -2,7 +2,6 @@ import React from 'react';
 import { Switch, Route } from 'react-router';
 
 import { withStyles } from '@material-ui/core/styles';
-import Chart from '../views/Chart';
 import MapView from '../views/Map';
 import Movement from '../views/Movement';
 import MovementVic from '../views/MovementVic';
