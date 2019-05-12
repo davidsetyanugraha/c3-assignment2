@@ -20,7 +20,7 @@ const victoriaMedian = fromLonLat(
   'EPSG:3857'
 );
 
-export default async function generateMap(
+export default function generateMap(
   target,
   setContent,
   oldMap,

@@ -11,7 +11,7 @@ const countTotal = obj => {
   // There are 2 fields, key and value.
   // "key" consists of [lga_code, region_name].
   // "value" consists of sins, in order of "sloth", "greed", "gluttony", "wrath", "lust", "envy", "pride".
-  return value.reduce((sum, cur) => sum + cur, 0);
+  return value.slice(0, 7).reduce((sum, cur) => sum + cur, 0);
 };
 
 export default async function createVectorLayer() {
@@ -20,7 +20,7 @@ export default async function createVectorLayer() {
     fetch('/LGA_GeoData.json'),
     // Data.
     fetch(
-      '/nectar/dashboard_source1/_design/summary/_view/sins_per_area?group=true'
+      '/nectar/sins_per_area/_design/summary/_view/sins_per_area?group=True'
     )
   ]);
   const territory = await response.json();
@@ -85,10 +85,12 @@ export default async function createVectorLayer() {
       const row = rows.find(({ key }) => key[0] === properties.lga_code);
       let freqTotal;
       let sins;
+      let aurin;
 
       if (row !== undefined) {
         freqTotal = countTotal(row);
-        sins = row.value;
+        sins = row.value.slice(0, 7);
+        aurin = row.value.slice(7, 14);
       }
 
       return {
@@ -96,7 +98,8 @@ export default async function createVectorLayer() {
         properties: {
           ...properties,
           freqTotal,
-          sins
+          sins,
+          aurin
         },
         geometry: {
           ...geometry,

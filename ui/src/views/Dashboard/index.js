@@ -8,12 +8,29 @@ import {
   Tooltip,
   Legend
 } from 'recharts';
+import { withStyles } from '@material-ui/core/styles';
+import Select from '@material-ui/core/Select';
+import MenuItem from '@material-ui/core/MenuItem';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
 
-function ChartView() {
-  const [direction, setDirection] = useState("from");
-  const [level, setLevel] = useState("city");
-  const [specific, setSpecific] = useState("");
-  const [value, setValue] = useState("distance");
+const styles = theme => ({
+  form: {
+    display: 'flex'
+  },
+  chart: {
+    marginTop: theme.spacing.unit * 2
+  }
+});
+
+function ChartView({ classes }) {
+  const [direction, setDirection] = useState('from');
+  const [level, setLevel] = useState('city');
+  const [specific, setSpecific] = useState('');
+  const [value, setValue] = useState('distance');
+
   const [data, setData] = useState([]);
 
   useEffect(() => {
@@ -157,62 +174,107 @@ function ChartView() {
   return (
     <div>
       <h2>Dashboard</h2>
+      <form className={classes.form} onSubmit={handleSubmit}>
+        <Grid container spacing={16}>
+          <Grid item xs={2}>
+            <FormControl fullWidth>
+              <InputLabel htmlFor="direction">Direction</InputLabel>
+              <Select
+                value={direction}
+                onChange={e => setDirection(e.target.value)}
+                inputProps={{
+                  name: 'direction',
+                  id: 'direction'
+                }}
+              >
+                <MenuItem value="from">From</MenuItem>
+                <MenuItem value="to">To</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={2}>
+            <FormControl fullWidth>
+              <InputLabel htmlFor="location-level">Location Level</InputLabel>
+              <Select
+                value={level}
+                onChange={e => setLevel(e.target.value)}
+                inputProps={{
+                  name: 'location-level',
+                  id: 'location-level'
+                }}
+              >
+                <MenuItem value="city">City</MenuItem>
+                <MenuItem value="street">Street</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={2}>
+            <FormControl fullWidth>
+              <InputLabel htmlFor="specific-location">
+                Specific Location
+              </InputLabel>
+              <Select
+                value={specific}
+                onChange={e => setSpecific(e.target.value)}
+                inputProps={{
+                  name: 'specific-location',
+                  id: 'specific-location'
+                }}
+              >
+                {generateLocations()}
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={2}>
+            <FormControl fullWidth>
+              <InputLabel htmlFor="value">Value</InputLabel>
+              <Select
+                value={value}
+                onChange={e => setValue(e.target.value)}
+                inputProps={{
+                  name: 'specific-location',
+                  id: 'specific-location'
+                }}
+              >
+                <MenuItem value="distance">Distance</MenuItem>
+                <MenuItem value="time">Time</MenuItem>
+                <MenuItem value="sins">Sins</MenuItem>
+                <MenuItem value="liveable">Liveable</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <Grid item xs={2}>
+            <Button variant="outlined" type="submit" value="Submit">
+              Get Data
+            </Button>
+          </Grid>
+        </Grid>
+      </form>
 
-        <div>
-          Direction:
-          <select value={direction} onChange={e => setDirection(e.target.value)}>
-            <option value="from">From</option>
-            <option value="to">To</option>
-          </select>
-        </div>
-
-        <div>
-          Location Level:
-          <select value={level} onChange={e => setLevel(e.target.value)}>
-            <option value="city">City</option>
-            <option value="street">Street</option>
-          </select>
-        </div>
-
-        <div>
-          Specific Location:
-          <select value={specific} onChange={e => setSpecific(e.target.value)} >
-            {generateLocations()}
-          </select>
-        </div>
-
-        <div>
-          Value:
-          <select value={value} onChange={e => setValue(e.target.value)}>
-            <option value="distance">Distance</option>
-            <option value="time">Time</option>
-            <option value="sins">Sins</option>
-            <option value="liveable">Liveable</option>
-          </select>
-        </div>
-      
       <h2>Top 5 {level} {direction} {specific} by {value}</h2>
 
-      <BarChart
-        width={800}
-        height={300}
-        data={data}
-        margin={{
-          top: 5,
-          right: 30,
-          left: 20,
-          bottom: 5
-        }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="name" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Bar dataKey="value" fill="#8884d8" />
-      </BarChart>
+      <div className={classes.chart}>
+        <BarChart
+          width={800}
+          height={300}
+          data={data}
+          margin={{
+            top: 5,
+            right: 30,
+            left: 20,
+            bottom: 5
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="name" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="value" fill="#8884d8" />
+        </BarChart>
+      </div>
     </div>
   );
 }
 
-export default ChartView;
+export default withStyles(styles)(ChartView);
