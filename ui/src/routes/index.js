@@ -9,7 +9,8 @@ import Dashboard from '../views/Dashboard';
 
 const styles = theme => ({
   content: {
-    marginLeft: theme.custom.sidebarWidth
+    marginLeft: theme.custom.sidebarWidth,
+    padding: theme.spacing.unit * 2
   }
 });
 
