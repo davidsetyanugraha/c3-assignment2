@@ -85,7 +85,9 @@ class MyStreamListener(tweepy.StreamListener):
 
 
 # Database Connection Configuration
-BASE_URL = 'http://172.26.38.57:5984'
+#BASE_URL = 'http://172.26.38.57:5984'
+# Put on the assumption that the harvester will run in the same instance where couchdb is hosted
+BASE_URL = 'http://localhost:5984'
 USERNAME = 'admin'
 PASSWORD = 'password'
 db = requests.Session()
