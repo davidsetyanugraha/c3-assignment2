@@ -18,11 +18,10 @@ function Routes(props) {
   return (
     <div className={props.classes.content}>
       <Switch>
-        <Route path="/" exact component={Chart} />
+        <Route path="/" exact component={Dashboard} />
         <Route path="/map" component={MapView} />
         <Route path="/movement" component={Movement} />
         <Route path="/movement-vic" component={MovementVic} />
-        <Route path="/dashboard" component={Dashboard} />
       </Switch>
     </div>
   );

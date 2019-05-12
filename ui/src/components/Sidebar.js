@@ -36,11 +36,10 @@ const styles = theme => ({
 });
 
 const routes = [
-  { to: '/', name: 'Charts' },
+  { to: '/', name: 'Dashboard' },
   { to: '/map', name: 'Distribution' },
   { to: '/movement', name: 'Movement' },
   { to: '/movement-vic', name: 'Movement (VIC)' },
-  { to: '/dashboard', name: 'Dashboard' },
   { to: '/travel-dest.html', name: 'Travels', out: true }
 ];
 
