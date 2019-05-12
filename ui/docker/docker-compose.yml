@@ -1,0 +1,8 @@
+version: '2'
+
+services:
+  firstcontainer:
+    image: exampleapp:latest
+    ports:
+      - 3000:3000
+    restart: always

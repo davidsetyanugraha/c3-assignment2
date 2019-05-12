@@ -69,6 +69,6 @@ TBD
 ### Getting started
 
 1. In this folder, `yarn` in your CLI.
-2. `yarn start` to start the development server.
-3. `yarn start:server` to start the "backend" server to send the JSON data, area boundaries, statistics, and stuff (apparently we don't have a backend).
+2. Then, do `make create-symbolic-link` to create symbolic links of used JSONs. We can access them with `/<json-name>.json` in our code.
+3. `yarn start` to start the development server.
 4. `yarn build` to build everything into an optimized bundle of static page.
