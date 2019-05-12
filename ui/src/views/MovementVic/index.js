@@ -2,8 +2,7 @@ import React, { useRef, useEffect, useState, Fragment } from 'react';
 import Feature from 'ol/Feature';
 import { Vector as VectorLayer } from 'ol/layer';
 import { Vector as VectorSource } from 'ol/source';
-import { Fill, Stroke, Style, Icon, Circle as CircleStyle } from 'ol/style';
-import Point from 'ol/geom/Point.js';
+import { Stroke, Style } from 'ol/style';
 import LineString from 'ol/geom/LineString.js';
 
 import generateMap from './Map';
@@ -19,8 +18,6 @@ const styles = theme => ({
 
 function MovementVic({ classes }) {
   const target = useRef(null);
-  const container = useRef(null);
-  const overlay = useRef(null);
   const map = useRef(null);
 
   const [selectedRanges, setSelectedRanges] = useState(undefined);
@@ -49,7 +46,7 @@ function MovementVic({ classes }) {
         const ranges = {};
         const initialSelected = selectedRanges || [];
 
-        json.rows.map(({ key }) => {
+        json.rows.forEach(({ key }) => {
           const locations = [];
           const [time, startlon, startlat, endlon, endlat] = key;
 
