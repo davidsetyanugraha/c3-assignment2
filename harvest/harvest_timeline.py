@@ -85,7 +85,7 @@ while True:
                     db[str(tweet['id'])] = tweet
             # Add user to already processed list
         except tweepy.TweepError as ex:
-            mprint("Exception while getting timeline for User:"+uniqueid+", Reason: "+ex.reason+". Skipping..")
+            mprint("Exception while getting timeline for User:"+str(uniqueid)+", Reason: "+ex.reason+". Skipping..")
 
         processeduserid.append(uniqueid)
         time.sleep(100)  # Sleep for 100 seconds, may increase if needed to avoid twitter block
