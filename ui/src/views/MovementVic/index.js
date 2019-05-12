@@ -7,6 +7,7 @@ import LineString from 'ol/geom/LineString.js';
 
 import generateMap from './Map';
 import { withStyles } from '@material-ui/core';
+import SearchableSelect from '../../components/SearchableSelect';
 
 const styles = theme => ({
   container: {
@@ -19,8 +20,9 @@ const styles = theme => ({
 function MovementVic({ classes }) {
   const target = useRef(null);
   const map = useRef(null);
+  const initialized = useRef(false);
 
-  const [selectedRanges, setSelectedRanges] = useState(undefined);
+  const [selectedRanges, setSelectedRanges] = useState([]);
   const [ranges, setRanges] = useState({});
 
   var styles = {
@@ -44,7 +46,7 @@ function MovementVic({ classes }) {
         // json.rows = json.rows.slice(0, 2500);
 
         const ranges = {};
-        const initialSelected = selectedRanges || [];
+        const initialSelected = [];
 
         json.rows.forEach(({ key }) => {
           const locations = [];
@@ -82,68 +84,61 @@ function MovementVic({ classes }) {
 
           ranges[time].push(vectorLayer2);
 
-          if (selectedRanges === undefined) {
+          if (!initialSelected.includes(time)) {
             initialSelected.push(time);
           }
         });
 
-        if (selectedRanges !== undefined) {
-          const layers = Object.keys(ranges).reduce((sum, curKey) => {
-            if (!initialSelected.includes(curKey)) {
-              return sum;
-            }
+        setRanges(ranges);
+        setSelectedRanges(
+          initialSelected.map(opt => ({ label: opt, value: opt }))
+        );
 
-            return sum.concat(ranges[curKey]);
-          }, []);
-
-          if (map.current !== null) {
-            const currentLayers = map.current.getLayers().array_;
-
-            map.current.getLayers().array_ = currentLayers.slice(0, 1);
-          }
-
-          map.current = await generateMap(
-            target,
-            undefined,
-            map.current,
-            layers
-          );
-        } else {
-          setRanges(ranges);
-          setSelectedRanges(initialSelected);
-        }
+        initialized.current = true;
       }
 
-      getMap();
+      if (initialized.current === false) {
+        getMap();
+      } else {
+        const layers = Object.keys(ranges).reduce((sum, curKey) => {
+          if (
+            selectedRanges.find(({ value }) => value === curKey) === undefined
+          ) {
+            return sum;
+          }
+
+          return sum.concat(ranges[curKey]);
+        }, []);
+
+        if (map.current !== null) {
+          const currentLayers = map.current.getLayers().array_;
+
+          map.current.getLayers().array_ = currentLayers.slice(0, 1);
+        }
+
+        map.current = generateMap(target, undefined, map.current, layers);
+      }
     },
     [selectedRanges]
   );
 
   const opts = Object.keys(ranges);
 
-  function onChangeSelect(e) {
-    const options = e.target.options;
-    const value = [];
-
-    for (let i = 0, l = opts.length; i < l; i++) {
-      if (options[i].selected) {
-        value.push(options[i].value);
-      }
-    }
-
-    setSelectedRanges(value);
+  function onChangeSelect(option) {
+    setSelectedRanges(option);
   }
 
   return (
-    <Fragment>
-      <select multiple value={selectedRanges} onChange={onChangeSelect}>
-        {opts.map(opt => (
-          <option key={opt}>{opt}</option>
-        ))}
-      </select>
+    <div>
+      <SearchableSelect
+        multiple
+        value={selectedRanges}
+        onChange={onChangeSelect}
+        options={opts.map(opt => ({ label: opt, value: opt }))}
+      />
       <div ref={target} className="map" id="map" />
       {/* <button onClick={onClick}>start movement</button> */}
-    </Fragment>
+    </div>
   );
 }
 

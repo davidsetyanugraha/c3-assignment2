@@ -86,8 +86,8 @@ export default async function generateMap(
                 <thead>
                   <tr>
                     <th />
-                    <th>Analytics</th>
-                    <th>AURIN</th>
+                    <th># Tweets</th>
+                    <th>AURIN Rate</th>
                   </tr>
                 </thead>
                 <tbody>
