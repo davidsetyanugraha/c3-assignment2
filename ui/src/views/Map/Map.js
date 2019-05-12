@@ -23,7 +23,25 @@ const victoriaMedian = fromLonLat(
   ],
   'EPSG:3857'
 );
-const sins = ['sloth', 'greed', 'gluttony', 'wrath', 'lust', 'envy', 'pride'];
+
+const sinNames = [
+  'sloth',
+  'greed',
+  'gluttony',
+  'wrath',
+  'lust',
+  'envy',
+  'pride'
+];
+const aurinNames = [
+  'sedentary',
+  'gambling loss',
+  'overweight',
+  'offence',
+  'sexual offence',
+  'homelessness',
+  'income'
+];
 
 export default async function generateMap(
   target,
@@ -55,20 +73,36 @@ export default async function generateMap(
       const [feature] = evt.target.getFeaturesAtPixel(evt.pixel) || [];
 
       if (feature) {
-        const { freqTotal, lga_name } = feature.values_;
+        const { freqTotal, lga_name, sins, aurin } = feature.values_;
 
         if (freqTotal !== undefined) {
           setContent(
             [
-              <h4 style={{ marginTop: 0 }}>
-                {titleCase(lga_name)} ({feature.values_.freqTotal} sins)
+              <h4 style={{ marginTop: 0, textAlign: 'center' }}>
+                {titleCase(lga_name)} ({freqTotal} sins)
               </h4>
             ].concat(
-              feature.values_.sins.map((sinValue, index) => (
-                <span>
-                  <b>{sins[index]}</b>: {sinValue}
-                </span>
-              ))
+              <table>
+                <thead>
+                  <tr>
+                    <th />
+                    <th>Analytics</th>
+                    <th>AURIN</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sins.map((sinValue, index) => (
+                    <tr key={index}>
+                      <td>
+                        <b>{titleCase(sinNames[index])}</b> (
+                        {titleCase(aurinNames[index])})
+                      </td>
+                      <td>{sinValue}</td>
+                      <td>{`${aurin[index]}`}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             )
           );
         } else {
