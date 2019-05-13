@@ -45,21 +45,7 @@ function ChartView({ classes }) {
       } else if (value === 'sins') {
         url =
           '/nectar/analysis_extended/_design/summary/_view/sumsins?group=true';
-      } else if (value === 'liveable') {
-        url =
-          '/nectar/analysis_extended/_design/summary/_view/sumsins?group=true';
       }
-      console.log('set new mapped data');
-      console.log(
-        'value = ' +
-          value +
-          ' ,direction = ' +
-          direction +
-          ' ,level = ' +
-          level +
-          ' ,specific = ' +
-          specific
-      );
 
       const response = await fetch(url);
       const jres = await response.json();
@@ -74,9 +60,6 @@ function ChartView({ classes }) {
       mappedData.sort(compare);
       mappedData.reverse();
       mappedData = getNFirst(mappedData, 5); //
-
-      console.log('new mapped data');
-      console.log(mappedData);
 
       setData(mappedData);
     }
@@ -161,10 +144,6 @@ function ChartView({ classes }) {
   }, [direction, level]);
 
   function generateLocations() {
-    // let sampleData = [
-    //   {"key":"YARRIAMBIACK","value":2}
-    //   ];
-
     let locations = [];
 
     if ((direction === 'from') & (level === 'city')) {
