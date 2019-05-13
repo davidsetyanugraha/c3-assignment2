@@ -87,17 +87,22 @@ class MyStreamListener(tweepy.StreamListener):
 # Database Connection Configuration
 #BASE_URL = 'http://172.26.38.57:5984'
 # Put on the assumption that the harvester will run in the same instance where couchdb is hosted
-BASE_URL = 'http://localhost:5984'
-USERNAME = 'admin'
-PASSWORD = 'password'
+harvestconfigfilepath = "harvestconfig.json"
+
+with open(harvestconfigfilepath, "r") as read_file:
+    harvestconfig = json.load(read_file)
+
+BASE_URL = harvestconfig["couchdb"]["baseurl"]
+USERNAME = harvestconfig["couchdb"]["user"]
+PASSWORD = harvestconfig["couchdb"]["password"]
 db = requests.Session()
 db.auth = (USERNAME, PASSWORD)
 
 # API Twitter Configuration
-consumer_key = "zUbPyH4bfQ8BC8cOKHBXuFe3S"
-consumer_secret = "zh4ioGw7vBWMKJ5E2pfgwcIcqUJezjIjV6UUWmCTAfSy4ki7P2"
-access_token = "170182726-U9LBuNEGA1pUDX8XIQBbXjxEgK4TxuUoVTZXFWwc"
-access_token_secret = "1RdmAN39YpPNRBZvv0Nfiie0LPxrhEUQHvffzDPqqxkGw"
+consumer_key = harvestconfig["twitterapi"]["consumer_key"]
+consumer_secret = harvestconfig["twitterapi"]["consumer_secret"]
+access_token = harvestconfig["twitterapi"]["access_token"]
+access_token_secret = harvestconfig["twitterapi"]["access_token_secret"]
 
 # Tweepy Initialization
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -106,15 +111,16 @@ api = tweepy.API(auth)
 myStream = tweepy.Stream(api.auth, MyStreamListener())
 
 # Run Streaming tweet code for certain GEOBOX
-GEOBOX_VICTORIA = [
-    140.96190162, -39.19848673,
-    150.03328204, -33.98079743,
-]
+GEOBOX = harvestconfig["twitterapi"]["geobox_coordinates"]
+#[
+#    140.96190162, -39.19848673,
+#    150.03328204, -33.98079743,
+#]
 
 # Run the Streaming continuously and reattempt incase of exception
 while True:
     try:
-        myStream.filter(locations=GEOBOX_VICTORIA)
+        myStream.filter(locations=GEOBOX)
     except Exception as ex:
         print(time.strftime("%a, %d %b %Y %H:%M:%S +0000") + " Exception in stream filter, retrying")
         print(ex)
