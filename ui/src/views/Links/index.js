@@ -52,9 +52,9 @@ const tableRows = [
     description: 'Most common travel destinations'
   },
   {
-    url: '/htmls/unlivable.html',
-    title: 'Unlivable',
-    description: 'Most unlivable cities to live on'
+    url: '/htmls/unliveable.html',
+    title: 'Unliveable',
+    description: 'Most unliveable cities to live on'
   },
   {
     url: '/htmls/wrath.html',
