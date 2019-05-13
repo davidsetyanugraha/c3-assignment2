@@ -66,6 +66,10 @@ export default async function generateMap(
         zoom
       })
     });
+  } else {
+    map = oldMap;
+
+    otherLayers.forEach(layer => map.addLayer(layer));
   }
 
   if (typeof setContent !== 'undefined') {
@@ -73,13 +77,20 @@ export default async function generateMap(
       const [feature] = evt.target.getFeaturesAtPixel(evt.pixel) || [];
 
       if (feature) {
-        const { freqTotal, lga_name, sins, aurin } = feature.values_;
+        const {
+          freqTotal,
+          lga_name,
+          sins,
+          aurin,
+          unliveable
+        } = feature.values_;
 
         if (freqTotal !== undefined) {
           setContent(
             [
               <h4 style={{ marginTop: 0, textAlign: 'center' }}>
-                {titleCase(lga_name)} ({freqTotal} sins)
+                {titleCase(lga_name)} ({freqTotal} sins) - Unliveable:{' '}
+                {unliveable.toFixed(2)}
               </h4>
             ].concat(
               <table>
@@ -98,7 +109,7 @@ export default async function generateMap(
                         {titleCase(aurinNames[index])})
                       </td>
                       <td>{sinValue}</td>
-                      <td>{`${aurin[index]}`}</td>
+                      <td>{aurin[index]}</td>
                     </tr>
                   ))}
                 </tbody>

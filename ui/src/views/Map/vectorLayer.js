@@ -14,7 +14,7 @@ const countTotal = obj => {
   return value.slice(0, 7).reduce((sum, cur) => sum + cur, 0);
 };
 
-export default async function createVectorLayer() {
+export default async function createVectorLayer(countSins = true) {
   const [response, area] = await Promise.all([
     // Area boundary.
     fetch('/LGA_GeoData.json'),
@@ -23,27 +23,44 @@ export default async function createVectorLayer() {
       '/nectar/sins_per_area2/_design/summary/_view/sins_per_area?group=True'
     )
   ]);
-  // Add unliveable_score.
   const territory = await response.json();
   const { rows } = await area.json();
   let max = -999999;
 
   rows.forEach(result => {
-    const total = countTotal(result);
+    let total;
+
+    if (countSins) {
+      total = countTotal(result);
+    } else {
+      // unliveable_score is index 14.
+      total = result.value[14];
+    }
 
     if (total > max) {
       max = total;
     }
   });
 
-  const normalizedMax = Math.pow(max, 0.2);
+  let normalizedMax = max;
+
+  if (countSins) {
+    normalizedMax = Math.pow(normalizedMax, 0.2);
+  } else {
+    normalizedMax = Math.pow(normalizedMax, 0.8);
+  }
 
   var styleFunction = function(feature) {
     const row = rows.find(({ key }) => key[0] === feature.values_.lga_code);
     let val = 0;
 
     if (row !== undefined) {
-      val = Math.pow(countTotal(row), 0.2);
+      if (countSins) {
+        val = Math.pow(countTotal(row), 0.2);
+      } else {
+        // unliveable_score is index 14.
+        val = row.value[14];
+      }
     }
 
     const red = (val / normalizedMax) * 255;
@@ -87,11 +104,13 @@ export default async function createVectorLayer() {
       let freqTotal;
       let sins;
       let aurin;
+      let unliveable;
 
       if (row !== undefined) {
         freqTotal = countTotal(row);
         sins = row.value.slice(0, 7);
         aurin = row.value.slice(7, 14);
+        unliveable = row.value[14];
       }
 
       return {
@@ -100,7 +119,8 @@ export default async function createVectorLayer() {
           ...properties,
           freqTotal,
           sins,
-          aurin
+          aurin,
+          unliveable
         },
         geometry: {
           ...geometry,

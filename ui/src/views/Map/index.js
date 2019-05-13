@@ -1,12 +1,24 @@
 import React, { useRef, useEffect, useState, Fragment } from 'react';
 
 import generateMap from './Map';
-import { withStyles } from '@material-ui/core';
+import {
+  withStyles,
+  Grid,
+  FormLabel,
+  RadioGroup,
+  FormControlLabel,
+  Radio
+} from '@material-ui/core';
 import createVectorLayer from './vectorLayer';
 
 const styles = theme => ({
+  root: {
+    position: 'relative'
+  },
   container: {
     position: 'absolute',
+    marginTop: 64,
+    border: '1px solid black',
     minWidth: 250,
     top: 0,
     right: 0,
@@ -17,6 +29,10 @@ const styles = theme => ({
   },
   overlayLine: {
     margin: 0
+  },
+  radios: {
+    display: 'flex',
+    flexDirection: 'row'
   }
 });
 
@@ -26,27 +42,66 @@ function App({ classes }) {
 
   const [, setState] = useState(0);
   const [content, setContent] = useState(undefined);
+  const [chosenMap, setChosenMap] = useState('sins');
 
-  useEffect(function() {
-    // Force update.
-    setState(1);
+  useEffect(
+    function() {
+      // Force update.
+      setState(1);
 
-    async function getMap() {
-      const vectorLayer = await createVectorLayer();
-      const newMap = await generateMap(target, setContent, map.current, [
-        vectorLayer
-      ]);
+      async function getMap() {
+        const vectorLayer = await createVectorLayer(chosenMap === 'sins');
+        const newMap = await generateMap(target, setContent, map.current, [
+          vectorLayer
+        ]);
 
-      map.current = newMap;
-    }
+        map.current = newMap;
+      }
 
-    getMap();
+      if (map.current !== null) {
+        const currentLayers = map.current.getLayers().array_;
 
-    return () => {};
-  }, []);
+        map.current.getLayers().array_ = currentLayers.slice(0, 1);
+      }
+
+      getMap();
+
+      return () => {};
+    },
+    [chosenMap]
+  );
+
+  function onChangeRadio(e) {
+    setChosenMap(e.target.value);
+  }
 
   return (
-    <Fragment>
+    <div className={classes.root}>
+      <Grid container>
+        <Grid item xs={12}>
+          <FormLabel component="legend">Map type</FormLabel>
+          <RadioGroup
+            aria-label="Choose map type"
+            name="mapType"
+            className={classes.radios}
+            value={chosenMap}
+            onChange={onChangeRadio}
+          >
+            <FormControlLabel
+              value="sins"
+              control={<Radio color="primary" />}
+              label="Sins"
+              labelPlacement="start"
+            />
+            <FormControlLabel
+              value="unliveable"
+              control={<Radio color="primary" />}
+              label="Unliveable"
+              labelPlacement="start"
+            />
+          </RadioGroup>
+        </Grid>
+      </Grid>
       {content !== undefined && (
         <div
           className={classes.container}
@@ -60,7 +115,7 @@ function App({ classes }) {
         </div>
       )}
       <div ref={target} className="map" id="map" />
-    </Fragment>
+    </div>
   );
 }
 
