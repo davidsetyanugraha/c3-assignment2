@@ -1,0 +1,12 @@
+{
+  "couchdb": {"baseurl": "localhost",
+    "user": "admin",
+    "password" : "password",
+    "databasename" : "victoria"
+  },
+  "twitterapi": {"consumer_key":"zUbPyH4bfQ8BC8cOKHBXuFe3S",
+    "consumer_secret":"zh4ioGw7vBWMKJ5E2pfgwcIcqUJezjIjV6UUWmCTAfSy4ki7P2",
+    "access_token":"170182726-U9LBuNEGA1pUDX8XIQBbXjxEgK4TxuUoVTZXFWwc",
+    "access_token_secret":"1RdmAN39YpPNRBZvv0Nfiie0LPxrhEUQHvffzDPqqxkGw"
+  }
+}
