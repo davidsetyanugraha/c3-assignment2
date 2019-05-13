@@ -6,20 +6,22 @@ import couchdb
 
 
 # Database Configuration
-COUCH_IP = 'localhost'  # based on the current infra couch db cluster is available in the same instance
-#COUCH_IP = '172.26.38.57'
+COUCH_IP = '172.26.38.57'
 #BASE_URL = 'http://172.26.38.57:5984' #to be dynamically set
 USERNAME = 'admin'
 PASSWORD = 'password'
 #couch = couchdb.Server(BASE_URL)
 couch = couchdb.Server("http://%s:%s@%s:5984/" % (USERNAME, PASSWORD, COUCH_IP))
 
-filebasepath = "/Aurin/dataset/"
+dbname = 'lga_vic_crime_stats_2008_2017'
+
+
+
+filebasepath = "/Volumes/GoogleDrive/My Drive/UniMelb/Semester_1_2019/COMP90024_CCC/Assignment/Assignment2/Aurin/dataset/"
 
 filepath = []
 dbname = []
 
-#read json files downloaded from aurin and upload to couch db
 
 filepath.append("LGA_Censusbased_T02_Selected_Medians_and_Averages_2001/data1405525802468816482.json")
 dbname.append("lga_censusbased_t02_selected_medians_and_averages_2001")
@@ -51,7 +53,6 @@ filepath.append("LGA_profiles_data_2011/data4411990047338157835.json")
 dbname.append("lga_profiles_data_2011")
 filepath.append("LGA_Number_of_Offences_in_Victoria_by_Offence_Type_2008_-_2017/data6044373292158139311.json")
 dbname.append("lga15_adults_health_risk_factor_estimates_-_2014-2015")
-
 
 for i in range(len(filepath)):
     if dbname[i] in couch:
