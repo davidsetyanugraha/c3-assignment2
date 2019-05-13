@@ -12,7 +12,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import MapIcon from '@material-ui/icons/Map';
 import PublicIcon from '@material-ui/icons/Public';
-import FlightIcon from '@material-ui/icons/Flight';
+import AppsIcon from '@material-ui/icons/Apps';
 
 import { Link } from 'react-router-dom';
 
@@ -54,7 +54,7 @@ const routes = [
   { to: '/map', name: 'Sin Distribution', icon: MapIcon },
   { to: '/movement', name: 'Movement', icon: PublicIcon },
   { to: '/movement-vic', name: 'Movement (VIC)', icon: PublicIcon },
-  { to: '/travel-dest.html', name: 'Travels', out: true, icon: FlightIcon }
+  { to: '/links', name: 'Links', icon: AppsIcon }
 ];
 
 function Sidebar(props) {
