@@ -20,9 +20,10 @@ export default async function createVectorLayer() {
     fetch('/LGA_GeoData.json'),
     // Data.
     fetch(
-      '/nectar/sins_per_area/_design/summary/_view/sins_per_area?group=True'
+      '/nectar/sins_per_area2/_design/summary/_view/sins_per_area?group=True'
     )
   ]);
+  // Add unliveable_score.
   const territory = await response.json();
   const { rows } = await area.json();
   let max = -999999;
