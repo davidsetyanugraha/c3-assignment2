@@ -38,16 +38,16 @@ function ChartView({ classes }) {
 
       if (value === 'distance') {
         url =
-          '/nectar/dashboard_source1/_design/summary/_view/mindistance?group=true';
+          '/nectar/analysis_extended/_design/summary/_view/mindistance?group=true';
       } else if (value === 'time') {
         url =
-          '/nectar/dashboard_source1/_design/summary/_view/mintimediff?group=true';
+          '/nectar/analysis_extended/_design/summary/_view/mintimediff?group=true';
       } else if (value === 'sins') {
         url =
-          '/nectar/dashboard_source1/_design/summary/_view/sumsins?group=true';
+          '/nectar/analysis_extended/_design/summary/_view/sumsins?group=true';
       } else if (value === 'liveable') {
         url =
-          '/nectar/dashboard_source1/_design/summary/_view/mindistance?group=true';
+          '/nectar/analysis_extended/_design/summary/_view/sumsins?group=true';
       }
       console.log('set new mapped data');
       console.log(
@@ -106,9 +106,7 @@ function ChartView({ classes }) {
         } else if (value === 'time') {
           val = e.value.min;
         } else if (value === 'sins') {
-          val = e.value.sum;
-        } else if (value === 'liveable') {
-          val = e.value.sum;
+          val = e.value.reduce((a,b) => a + b, 0);
         }
 
         if ((direction === 'from') & (from === specific)) {
@@ -141,10 +139,10 @@ function ChartView({ classes }) {
       let url = '';
       if ((direction === 'from') & (level === 'city')) {
         url =
-          '/nectar/dashboard_source1/_design/summary/_view/fromCity?group=true';
+          '/nectar/analysis_extended/_design/summary/_view/fromCity?group=true';
       } else if ((direction === 'to') & (level === 'city')) {
         url =
-          '/nectar/dashboard_source1/_design/summary/_view/toCity?group=true';
+          '/nectar/analysis_extended/_design/summary/_view/toCity?group=true';
       }
 
       console.log('calling: ' + url);
@@ -224,7 +222,6 @@ function ChartView({ classes }) {
               }}
             >
               <MenuItem value="city">City</MenuItem>
-              <MenuItem value="street">Street</MenuItem>
             </Select>
           </FormControl>
         </Grid>
@@ -259,7 +256,6 @@ function ChartView({ classes }) {
               <MenuItem value="distance">Distance</MenuItem>
               <MenuItem value="time">Time</MenuItem>
               <MenuItem value="sins">Sins</MenuItem>
-              <MenuItem value="liveable">Liveable</MenuItem>
             </Select>
           </FormControl>
         </Grid>
