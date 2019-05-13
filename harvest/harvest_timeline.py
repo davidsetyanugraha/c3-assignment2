@@ -9,22 +9,32 @@ import time
 def mprint(msg):
     print(time.strftime("%a, %d %b %Y %H:%M:%S +0000") + " " + msg)
 
+harvestconfigfilepath = "harvesttimelineconfig.json"
+
+with open(harvestconfigfilepath, "r") as read_file:
+    harvestconfig = json.load(read_file)
+
+BASE_URL = harvestconfig["couchdb"]["baseurl"]
+USERNAME = harvestconfig["couchdb"]["user"]
+PASSWORD = harvestconfig["couchdb"]["password"]
+DATABASENAME = harvestconfig["couchdb"]["databasename"]
+
 # Database Configuration
 #IP = '172.26.38.57'
-IP = 'localhost'  # (Assuming the harvester is running in the same instance as couchdb, which is the current setup)
+#IP = 'localhost'  # (Assuming the harvester is running in the same instance as couchdb, which is the current setup)
 #BASE_URL = 'http://172.26.38.57:5984'
-BASE_URL = 'http://localhost:5984'
-USERNAME = 'admin'
-PASSWORD = 'password'
+#BASE_URL = 'http://localhost:5984'
+#USERNAME = 'admin'
+#PASSWORD = 'password'
 
 #couchserver = couchdb.Server(BASE_URL)
-couchserver = couchdb.Server("http://%s:%s@%s:5984/" % (USERNAME, PASSWORD, IP))
+couchserver = couchdb.Server("http://%s:%s@%s:5984/" % (USERNAME, PASSWORD, BASE_URL))
 
 # API Twitter Configuration
-consumer_key = "zUbPyH4bfQ8BC8cOKHBXuFe3S"
-consumer_secret = "zh4ioGw7vBWMKJ5E2pfgwcIcqUJezjIjV6UUWmCTAfSy4ki7P2"
-access_token = "170182726-U9LBuNEGA1pUDX8XIQBbXjxEgK4TxuUoVTZXFWwc"
-access_token_secret = "1RdmAN39YpPNRBZvv0Nfiie0LPxrhEUQHvffzDPqqxkGw"
+consumer_key = harvestconfig["twitterapi"]["consumer_key"]
+consumer_secret = harvestconfig["twitterapi"]["consumer_secret"]
+access_token = harvestconfig["twitterapi"]["access_token"]
+access_token_secret = harvestconfig["twitterapi"]["access_token_secret"]
 
 # Tweepy Initialization
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -32,7 +42,7 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth)
 
 # read victoria view
-vic = couchserver['victoria']
+vic = couchserver[DATABASENAME]
 vicview = vic.view('_design/uniqueUserWithCoords/_view/uniqueUserWithCoordsDoc')
 vicviewchanges = vic.changes(include_docs=True, filter="_view", view="uniqueUserWithCoords/uniqueUserWithCoordsDoc")
 
@@ -90,7 +100,7 @@ while True:
             mprint("Exception while getting timeline for User:"+str(uniqueid)+", Reason: "+ex.reason+". Skipping..")
 
         processeduserid.append(uniqueid)
-        time.sleep(100)  # Sleep for 100 seconds, may increase if needed to avoid twitter block
+        time.sleep(60)  # Sleep for 60 seconds, may increase if needed to avoid twitter block
 
     mprint("Done with processing vicviewchanges... lastvicviewseq "+lastvicviewseq +
            ", number of unique userid timeline fetched "+len(userid) +
