@@ -1,2 +1,5 @@
 nectar-credentials.sh
 nectar.retry
+
+# Don't upload IDE config.
+.idea

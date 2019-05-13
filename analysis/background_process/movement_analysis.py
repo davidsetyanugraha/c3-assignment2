@@ -99,11 +99,11 @@ print("read database")
 countries = "country-boundingboxes.csv"
 
 # geojson of victoria
-geojson = "LGA_GeoData.json"
+geojson = "../geojson-files/LGA_GeoData.json"
 
 # geojson of victoria streets   
 # from https://data.melbourne.vic.gov.au/Property-Planning/Street-addresses/a7rp-xtya
-geojson2 = 'street_addresses.geojson'
+geojson2 = '../geojson-files/street_addresses.geojson'
 
 # tweet food hashtag
 foodtag = "food_hashtag.txt"
