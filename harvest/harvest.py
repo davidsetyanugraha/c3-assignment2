@@ -57,7 +57,7 @@ class MyStreamListener(tweepy.StreamListener):
         data = json.dumps(status._json)
 
         # Insert Document to Tweets database
-        url = BASE_URL + '/victoria/\"' + str(status.id) + '\"'
+        url = BASE_URL + '/'+DATABASENAME+'/\"' + str(status.id) + '\"'
         response = db.put(url, data)
 
         # Catch the error from DB response
@@ -70,8 +70,8 @@ class MyStreamListener(tweepy.StreamListener):
                 self.error += 1
         else:
             self.success_insert += 1
-        print(time.strftime("%a, %d %b %Y %H:%M:%S +0000") + " Insert tweet in insertDB (" + str(response.status_code) + ") " +
-              str(response.json()) + "[" + str(status.id) + "]")
+        #print(time.strftime("%a, %d %b %Y %H:%M:%S +0000") + " Insert tweet in insertDB (" + str(response.status_code) + ") " +
+        #      str(response.json()) + "[" + str(status.id) + "]")
 
     def on_error(self, status_code):
         print(time.strftime("%a, %d %b %Y %H:%M:%S +0000") + " on_error message triggered (" + str(status_code) + ")",
@@ -95,6 +95,7 @@ with open(harvestconfigfilepath, "r") as read_file:
 BASE_URL = harvestconfig["couchdb"]["baseurl"]
 USERNAME = harvestconfig["couchdb"]["user"]
 PASSWORD = harvestconfig["couchdb"]["password"]
+DATABASENAME = harvestconfig["couchdb"]["databasename"]
 db = requests.Session()
 db.auth = (USERNAME, PASSWORD)
 
