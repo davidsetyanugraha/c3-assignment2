@@ -1,0 +1,39 @@
+---
+- name: copy py scipts
+  copy:
+   src: harvest
+   dest: /home/ubuntu/
+   mode: +x
+
+- name: create vic db
+  uri:
+    url: http://localhost:5984/victoria
+    user: admin
+    password: password
+    method: PUT
+    force_basic_auth: yes
+    status_code: 200,201,412
+#  when: inventory_hostname == groups['remote'][0]
+
+- name: node 1 run harvest bk1
+  shell: nohup python3 -u /home/ubuntu/harvest/harvest-bk1.py > /home/ubuntu/harvest/bk1.log &
+  async: 2592000
+  poll: 0
+  when: inventory_hostname == groups['remote'][0]
+
+- name: node 2 run harvest bk2
+  shell: nohup python3 -u /home/ubuntu/harvest/harvest-bk2.py > /home/ubuntu/harvest/bk2.log &
+  async: 2592000
+  poll: 0
+  when: inventory_hostname == groups['remote'][1]
+
+#- name: node 2 run harvesttimeline
+#  shell: nohup python3 -u /home/ubuntu/harvest/harvest_timeline.py > /home/ubuntu/harvest/timeline.log &
+#  async: 2592000
+#  poll: 0
+#  when: inventory_hostname == groups['remote'][2]
+
+#- name: run async nohup
+#  shell: nohup python3 -u /home/ubuntu/harvest/file.00 > /home/ubuntu/harvest/log &
+#  async: 2592000
+#  poll: 0

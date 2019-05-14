@@ -1,0 +1,32 @@
+---
+- name: add internet proxy
+  become: yes
+  blockinfile:
+    path: /etc/environment
+    block: |
+      http_proxy="http://wwwproxy.unimelb.edu.au:8000"
+      https_proxy="http://wwwproxy.unimelb.edu.au:8000"
+      ftp_proxy="http://wwwproxy.unimelb.edu.au:8000"
+      no_proxy=localhost,127.0.0.1,ubuntu
+    state: present
+
+#- name: source etc environment
+#  shell: source /etc/environment
+
+#- name: check
+#  shell: echo $http_proxy
+#  register: hasil
+
+#- debug:
+#   msg: "hasil {{ hasil.stdout }}"
+
+- user: name={{ansible_user}}
+- name: reset ssh connection to allow user changes to affect 'current login user'
+  meta: reset_connection
+
+#- name: export proxy
+#  shell: |
+#   export http_proxy="http://wwwproxy.unimelb.edu.au:8000"
+#   export https_proxy="http://wwwproxy.unimelb.edu.au:8000"
+#   export ftp_proxy="http://wwwproxy.unimelb.edu.au:8000"
+#   export no_proxy=localhost,127.0.0.1,ubuntu

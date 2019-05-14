@@ -1,0 +1,15 @@
+{
+  "couchdb": {"baseurl": "http://localhost:5984",
+    "user": "admin",
+    "password" : "password",
+    "databasename" : "victoria"
+  },
+  "twitterapi": {"consumer_key":"zUbPyH4bfQ8BC8cOKHBXuFe3S",
+    "consumer_secret":"zh4ioGw7vBWMKJ5E2pfgwcIcqUJezjIjV6UUWmCTAfSy4ki7P2",
+    "access_token":"170182726-U9LBuNEGA1pUDX8XIQBbXjxEgK4TxuUoVTZXFWwc",
+    "access_token_secret":"1RdmAN39YpPNRBZvv0Nfiie0LPxrhEUQHvffzDPqqxkGw",
+    "geobox_coordinates" : [145.49759183, -39.19848673, 150.03328204, -33.98079743],
+    "geobox_coordinates_bk1" : [140.96190162, -39.19848673, 145.49759183, -33.98079743],
+    "geobox_coordinates_bk2" : [140.96190162, -39.19848673, 150.03328204, -33.98079743]
+  }
+}

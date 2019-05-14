@@ -1,6 +1,8 @@
+# Nginx server block.
 server {
     # Nginx port.
     listen 80;
+    listen [::]:80;
 
     root /usr/share/nginx/html;
     index index.html;
@@ -12,15 +14,6 @@ server {
     gzip_proxied expired no-cache no-store private auth;
     gzip_types text/css application/javascript;
     gzip_disable "MSIE [1-6]\.";
-
-    # Example forward proxy.
-    location /nectar/ {
-        # We use localhost because we don't know the exact IP address of the instances.
-        proxy_pass http://localhost:5984/;
-        # If you want to connect from HTTP to HTTPS, you probably need this.
-        proxy_ssl_server_name on;
-        proxy_http_version 1.1;
-    }
 
     # Search for index.html in the root folder.
     location / {

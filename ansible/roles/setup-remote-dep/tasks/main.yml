@@ -1,0 +1,80 @@
+---
+#- name: format volume to ext4
+#  become: yes
+#  filesystem:
+#   fstype: ext4
+#   dev: /dev/vdb
+
+#- name: add internet proxy
+#  become: yes
+#  blockinfile:
+#    path: /etc/environment
+#    block: |
+#      http_proxy="http://wwwproxy.unimelb.edu.au:8000"
+#      https_proxy="http://wwwproxy.unimelb.edu.au:8000"
+#      ftp_proxy="http://wwwproxy.unimelb.edu.au:8000"
+#      no_proxy=localhost,127.0.0.1
+#    state: present
+
+- name: sudo apt-get update
+  become: yes
+  shell: apt-get update
+#   force_apt_get: yes
+#   update_cache: yes
+
+- name: Install pip3
+  become: yes
+  apt:
+   name: python3-pip
+   state: present
+
+- pause:
+   seconds: 10
+   prompt: let pip3 build cache
+
+- name: install dependencies with pip3
+  pip:
+   name: '{{ item.dep_name }}'
+   state: latest
+   executable: pip3
+  loop: '{{ pip_dep }}'
+
+#- name: pip3 install tweepy
+#  pip:
+#   name: tweepy
+#   state: latest
+#   executable: pip3
+#   extra_args: --proxy=wwwproxy.unimelb.edu.au:8000
+
+#- pause:
+#   seconds: 3
+#   prompt: give pip3 a break
+
+#- name: pip3 install nltk
+#  pip:
+#   name: nltk
+#   state: latest
+#   executable: pip3
+#   extra_args: --proxy=wwwproxy.unimelb.edu.au:8000
+
+#- pause:
+#   seconds: 3
+#   prompt: give pip3 a break
+
+#- name: pip3 install pandas
+#  pip:
+#   name: pandas
+#   state: latest
+#   executable: pip3
+#   extra_args: --proxy=wwwproxy.unimelb.edu.au:8000
+
+#- pause:
+#   seconds: 3
+#   prompt: give pip3 a break
+
+#- name: pip3 install couchdb
+#  pip:
+#   name: couchdb
+#   state: latest
+#   executable: pip3
+#   extra_args: --proxy=wwwproxy.unimelb.edu.au:8000

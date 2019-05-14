@@ -17,8 +17,8 @@ export ANSIBLE_HOST_KEY_CHECKING=False
 export OS_AUTH_URL=https://keystone.rc.nectar.org.au:5000/v3/
 # With the addition of Keystone we have standardized on the term **project**
 # as the entity that owns the resources.
-export OS_PROJECT_ID=ee69addee43b449c993c68ad0b70d843
-export OS_PROJECT_NAME="unimelb-comp90024-group-14"
+export OS_PROJECT_ID=69d0d79d886e4e76a70ccca3a2fa05da
+export OS_PROJECT_NAME="unimelb-bitbox"
 export OS_USER_DOMAIN_NAME="Default"
 if [ -z "$OS_USER_DOMAIN_NAME" ]; then unset OS_USER_DOMAIN_NAME; fi
 export OS_PROJECT_DOMAIN_ID="default"

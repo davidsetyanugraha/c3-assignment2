@@ -5,16 +5,16 @@
    fstype: ext4
    dev: /dev/vdb
 
-- name: add internet proxy
-  become: yes
-  blockinfile:
-    path: /etc/environment
-    block: |
-      http_proxy="http://wwwproxy.unimelb.edu.au:8000"
-      https_proxy="http://wwwproxy.unimelb.edu.au:8000"
-      ftp_proxy="http://wwwproxy.unimelb.edu.au:8000"
-      no_proxy=localhost,127.0.0.1,ubuntu
-    state: present
+#- name: add internet proxy
+#  become: yes
+#  blockinfile:
+#    path: /etc/environment
+#    block: |
+#      http_proxy="http://wwwproxy.unimelb.edu.au:8000"
+#      https_proxy="http://wwwproxy.unimelb.edu.au:8000"
+#      ftp_proxy="http://wwwproxy.unimelb.edu.au:8000"
+#      no_proxy=localhost,127.0.0.1,ubuntu
+#    state: present
 
 # Purge couchdb if needed.
 # - name: Purge
@@ -84,13 +84,13 @@
    owner: couchdb
    group: couchdb
 
-- name: create dir for couchdb view
-  become: yes
-  file:
-   path: /mnt/couchdb/view
-   state: directory
-   owner: couchdb
-   group: couchdb
+#- name: create dir for couchdb view
+#  become: yes
+#  file:
+#   path: /mnt/couchdb/view
+#   state: directory
+#   owner: couchdb
+#   group: couchdb
 
 #- name: feed new storage path
 #  become: yes
@@ -130,16 +130,16 @@
     status_code: 200,201
   when: "'couchdb' not in ansible_facts.packages"
 
-- name: make use 60 gb for db
-  uri:
-    url: http://{{ inventory_hostname }}:5984/_node/_local/_config/couchdb/database_dir
-    user: admin
-    password: password
-    method: PUT
-    body: '"/mnt/couchdb/database"'
-    force_basic_auth: yes
-    status_code: 200,201
-  when: "'couchdb' not in ansible_facts.packages"
+#- name: make use 60 gb for db
+#  uri:
+#    url: http://{{ inventory_hostname }}:5984/_node/_local/_config/couchdb/database_dir
+#    user: admin
+#    password: password
+#    method: PUT
+#    body: '"/mnt/couchdb/database"'
+#    force_basic_auth: yes
+#    status_code: 200,201
+#  when: "'couchdb' not in ansible_facts.packages"
 
 #- name: make use 60 gb for db
 #  uri:
@@ -161,7 +161,7 @@
     user: admin
     password: password
     method: POST
-    body: '{"action": "enable_cluster", "bind_address":"0.0.0.0", "username": "admin", "password":"password", "node_count":"4"}'
+    body: '{"action": "enable_cluster", "bind_address":"0.0.0.0", "username": "admin", "password":"password", "node_count":"{{ nodes_num }}"}'
     body_format: json
     force_basic_auth: yes
     status_code: 201,400
@@ -181,7 +181,7 @@
     user: admin
     password: password
     method: POST
-    body: '{"action": "enable_cluster", "bind_address":"0.0.0.0", "username": "admin", "password":"password", "port": 5984, "node_count": "4", "remote_node": "{{ item }}", "remote_current_user": "admin", "remote_current_password": "password" }'
+    body: '{"action": "enable_cluster", "bind_address":"0.0.0.0", "username": "admin", "password":"password", "port": 5984, "node_count": "{{ nodes_num }}", "remote_node": "{{ item }}", "remote_current_user": "admin", "remote_current_password": "password" }'
     force_basic_auth: yes
     status_code: 201,409
     body_format: json
@@ -231,3 +231,14 @@
     - inventory_hostname == groups['remote'][0]
     - final_membership.stdout != initial_membership.stdout
     - "'couchdb' not in ansible_facts.packages"
+
+- name: make use 60 gb for db
+  uri:
+    url: http://{{ inventory_hostname }}:5984/_node/_local/_config/couchdb/database_dir
+    user: admin
+    password: password
+    method: PUT
+    body: '"/mnt/couchdb/database"'
+    force_basic_auth: yes
+    status_code: 200,201
+  when: "'couchdb' not in ansible_facts.packages"
