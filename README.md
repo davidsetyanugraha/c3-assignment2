@@ -1,6 +1,6 @@
 # Cluster and Cloud Computing, Team 14, Assignment 2 Sem 1 2019
 
-This is a repository for Cluster and Cloud Computing Assignment 2. It is made with a collective effort from all 5 members:
+This is a repository for Cluster and Cloud Computing Assignment 2. It was made with a collective effort from all 5 members below.
 
 1. Dading Zainal Gusti
 2. David Setyanugraha
