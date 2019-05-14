@@ -18,7 +18,8 @@ import time
 def mprint(msg):
     print(time.strftime("%a, %d %b %Y %H:%M:%S +0000") + " " + msg)
 
-harvestconfigfilepath = "harvesttimelineconfig.json"
+# read absulte path as required in ansible
+harvestconfigfilepath = os.path.join(os.path.dirname(os.path.realpath(__file__)), "harvesttimelineconfig.json")
 
 with open(harvestconfigfilepath, "r") as read_file:
     harvestconfig = json.load(read_file)
@@ -109,7 +110,7 @@ while True:
             mprint("Exception while getting timeline for User:"+str(uniqueid)+", Reason: "+ex.reason+". Skipping..")
 
         processeduserid.append(uniqueid)
-        time.sleep(60)  # Sleep for 60 seconds, may increase if needed to avoid twitter block
+        time.sleep(90)  # Sleep for 60 seconds, may increase if needed to avoid twitter block
 
     mprint("Done with processing vicviewchanges... lastvicviewseq "+lastvicviewseq +
            ", number of unique userid timeline fetched "+len(userid) +
