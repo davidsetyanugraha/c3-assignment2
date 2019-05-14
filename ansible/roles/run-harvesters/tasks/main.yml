@@ -1,4 +1,12 @@
 ---
+# Title: The Seven Deadly Sins in Social Media Case Study in Victoria Cities
+# Team Name: Team 14
+# Team Members:
+#   Dading Zainal Gusti (1001261)
+#   David Setyanugraha (867585)
+#   Ghawady Ehmaid (983899)
+#   Indah Permatasari (929578)
+#   Try Ajitiono (990633)
 - name: copy py scripts
   copy:
    src: harvest
@@ -33,14 +41,3 @@
    dest: /home/ubuntu/
    mode: +x
   when: inventory_hostname == groups['remote'][2]
-
-#- name: node 2 run harvesttimeline
-#  shell: nohup python3 -u /home/ubuntu/harvest/harvest_timeline.py > /home/ubuntu/harvest/timeline.log &
-#  async: 2592000
-#  poll: 0
-#  when: inventory_hostname == groups['remote'][2]
-
-#- name: run async nohup
-#  shell: nohup python3 -u /home/ubuntu/harvest/file.00 > /home/ubuntu/harvest/log &
-#  async: 2592000
-#  poll: 0

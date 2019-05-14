@@ -1,4 +1,11 @@
-#nectar.yaml
+# Title: The Seven Deadly Sins in Social Media Case Study in Victoria Cities
+# Team Name: Team 14
+# Team Members:
+#   Dading Zainal Gusti (1001261)
+#   David Setyanugraha (867585)
+#   Ghawady Ehmaid (983899)
+#   Indah Permatasari (929578)
+#   Try Ajitiono (990633)
 - hosts: localhost
   vars_files:
     - host_vars/nectar.yaml
@@ -33,13 +40,3 @@
     - role: run-harvesters
   vars:
     ansible_ssh_private_key_file: '~/id_rsa'
-
-#- hosts: remote
-#  vars_files:
-#    - host_vars/nectar.yaml
-#  remote_user: ubuntu
-#  gather_facts: true
-#  roles:
-#    - role: run-harvesters
-#  vars:
-#    ansible_ssh_private_key_file: '~/cloudkey.pem'

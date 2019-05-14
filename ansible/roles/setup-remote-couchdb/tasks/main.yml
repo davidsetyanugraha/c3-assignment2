@@ -1,34 +1,24 @@
 ---
+# Title: The Seven Deadly Sins in Social Media Case Study in Victoria Cities
+# Team Name: Team 14
+# Team Members:
+#   Dading Zainal Gusti (1001261)
+#   David Setyanugraha (867585)
+#   Ghawady Ehmaid (983899)
+#   Indah Permatasari (929578)
+#   Try Ajitiono (990633)
+
 - name: format volume to ext4
   become: yes
   filesystem:
    fstype: ext4
    dev: /dev/vdb
 
-#- name: add internet proxy
-#  become: yes
-#  blockinfile:
-#    path: /etc/environment
-#    block: |
-#      http_proxy="http://wwwproxy.unimelb.edu.au:8000"
-#      https_proxy="http://wwwproxy.unimelb.edu.au:8000"
-#      ftp_proxy="http://wwwproxy.unimelb.edu.au:8000"
-#      no_proxy=localhost,127.0.0.1,ubuntu
-#    state: present
-
-# Purge couchdb if needed.
-# - name: Purge
-#   become: yes
-#   shell: apt-get purge -y couchdb
 
 # Checks if couchdb is installed. Use with `"'couchdb' not in ansible_facts.packages"`.
 - name: 'Check if couchdb is installed'
   package_facts:
     manager: 'auto'
-
-# - name: debug
-#   debug:
-#     msg: "{{'couchdb' not in ansible_facts.packages}}"
 
 - name: add couchdb repo key
   become: yes
@@ -51,14 +41,6 @@
   become: yes
   script: working_scripts/00-install-couchdb.sh {{ inventory_hostname }}
   when: "'couchdb' not in ansible_facts.packages"
-
-#- name: create dir for couchdb
-#  become: yes
-#  file:
-#   path: /dev/vdb/couchdb
-#   state: directory
-#   owner: couchdb
-#   group: couchdb
 
 - name: create dir for couchdb
   become: yes
@@ -83,19 +65,6 @@
    state: directory
    owner: couchdb
    group: couchdb
-
-#- name: create dir for couchdb view
-#  become: yes
-#  file:
-#   path: /mnt/couchdb/view
-#   state: directory
-#   owner: couchdb
-#   group: couchdb
-
-#- name: feed new storage path
-#  become: yes
-#  template: src=local.ini
-#   dest: /opt/couchdb/etc/local.ini
 
 - name: Make CouchDB use the open ports
   become: yes
@@ -129,28 +98,6 @@
     force_basic_auth: yes
     status_code: 200,201
   when: "'couchdb' not in ansible_facts.packages"
-
-#- name: make use 60 gb for db
-#  uri:
-#    url: http://{{ inventory_hostname }}:5984/_node/_local/_config/couchdb/database_dir
-#    user: admin
-#    password: password
-#    method: PUT
-#    body: '"/mnt/couchdb/database"'
-#    force_basic_auth: yes
-#    status_code: 200,201
-#  when: "'couchdb' not in ansible_facts.packages"
-
-#- name: make use 60 gb for db
-#  uri:
-#    url: http://{{ inventory_hostname }}:5984/_node/_local/_config/couchdb/view_index_dir
-#    user: admin
-#    password: password
-#    method: PUT
-#    body: '"/dev/vdb/couchdb/view"'
-#    force_basic_auth: yes
-#    status_code: 200,201
-#  when: "'couchdb' not in ansible_facts.packages"
 
 ##
 # Start clustering
@@ -210,10 +157,6 @@
   script: working_scripts/01-check-membership.sh {{ inventory_hostname }}
   when: inventory_hostname == groups['remote'][0]
   register: final_membership
-
-# - name: debug
-#   debug:
-#     msg: '{{ final_membership }} and {{ initial_membership }}'
 
 - name: finish the cluster
   uri:

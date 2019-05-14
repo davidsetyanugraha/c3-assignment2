@@ -1,5 +1,12 @@
 #!/usr/bin/env python3
-
+# Title: The Seven Deadly Sins in Social Media Case Study in Victoria Cities
+# Team Name: Team 14
+# Team Members:
+#   Dading Zainal Gusti (1001261)
+#   David Setyanugraha (867585)
+#   Ghawady Ehmaid (983899)
+#   Indah Permatasari (929578)
+#   Try Ajitiono (990633)
 # Tips:
 # We can run this harvest.py in the background, use this command:
 # nohup python3 ./harvest.py &

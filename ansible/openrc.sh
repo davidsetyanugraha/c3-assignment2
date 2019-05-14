@@ -1,4 +1,12 @@
 #!/usr/bin/env bash
+# Title: The Seven Deadly Sins in Social Media Case Study in Victoria Cities
+# Team Name: Team 14
+# Team Members:
+#   Dading Zainal Gusti (1001261)
+#   David Setyanugraha (867585)
+#   Ghawady Ehmaid (983899)
+#   Indah Permatasari (929578)
+#   Try Ajitiono (990633)
 # To use an OpenStack cloud you need to authenticate against the Identity
 # service named keystone, which returns a **Token** and **Service Catalog**.
 # The catalog contains the endpoints for all services the user/tenant has

@@ -1,4 +1,12 @@
 ---
+# Title: The Seven Deadly Sins in Social Media Case Study in Victoria Cities
+# Team Name: Team 14
+# Team Members:
+#   Dading Zainal Gusti (1001261)
+#   David Setyanugraha (867585)
+#   Ghawady Ehmaid (983899)
+#   Indah Permatasari (929578)
+#   Try Ajitiono (990633)
 - name: add internet proxy
   become: yes
   blockinfile:
@@ -10,23 +18,6 @@
       no_proxy=localhost,127.0.0.1,ubuntu
     state: present
 
-#- name: source etc environment
-#  shell: source /etc/environment
-
-#- name: check
-#  shell: echo $http_proxy
-#  register: hasil
-
-#- debug:
-#   msg: "hasil {{ hasil.stdout }}"
-
 - user: name={{ansible_user}}
 - name: reset ssh connection to allow user changes to affect 'current login user'
   meta: reset_connection
-
-#- name: export proxy
-#  shell: |
-#   export http_proxy="http://wwwproxy.unimelb.edu.au:8000"
-#   export https_proxy="http://wwwproxy.unimelb.edu.au:8000"
-#   export ftp_proxy="http://wwwproxy.unimelb.edu.au:8000"
-#   export no_proxy=localhost,127.0.0.1,ubuntu

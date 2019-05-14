@@ -1,4 +1,12 @@
 ---
+# Title: The Seven Deadly Sins in Social Media Case Study in Victoria Cities
+# Team Name: Team 14
+# Team Members:
+#   Dading Zainal Gusti (1001261)
+#   David Setyanugraha (867585)
+#   Ghawady Ehmaid (983899)
+#   Indah Permatasari (929578)
+#   Try Ajitiono (990633)
 - name: Create volumes on Nectar
   os_volume:
    display_name: '{{ item.vol_name }}'
@@ -17,6 +25,3 @@
 
 - debug:
    msg: "volume {{ os_vol_ids }} has been created"
-#
-#- debug:
-#   msg: "this is the first index {{ os_vol_ids[0] }} okay"
