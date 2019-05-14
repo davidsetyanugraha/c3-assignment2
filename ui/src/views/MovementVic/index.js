@@ -38,7 +38,7 @@ function MovementVic({ classes }) {
     function() {
       async function getMap() {
         const x = await fetch(
-          '/nectar/dashboard_source1/_design/summary/_view/coor_to_coor_vic_time?group=true'
+          '/nectar/analysis_extended/_design/summary/_view/coor_to_coor_vic_time?group=true'
         );
         let json = await x.json();
 

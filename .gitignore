@@ -3,3 +3,4 @@ nectar.retry
 
 # Don't upload IDE config.
 .idea
+.vscode
