@@ -1,5 +1,5 @@
 ---
-- name: copy py scipts
+- name: copy py scripts
   copy:
    src: harvest
    dest: /home/ubuntu/
@@ -26,6 +26,13 @@
   async: 2592000
   poll: 0
   when: inventory_hostname == groups['remote'][1]
+
+- name: copy py scripts to node 3
+  copy:
+   src: analysis
+   dest: /home/ubuntu/
+   mode: +x
+  when: inventory_hostname == groups['remote'][2]
 
 #- name: node 2 run harvesttimeline
 #  shell: nohup python3 -u /home/ubuntu/harvest/harvest_timeline.py > /home/ubuntu/harvest/timeline.log &

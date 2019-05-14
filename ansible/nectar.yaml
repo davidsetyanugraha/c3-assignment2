@@ -19,7 +19,7 @@
   roles:
     - role: setup-remote-proxy
   vars:
-    ansible_ssh_private_key_file: '~/cloudkey.pem'
+    ansible_ssh_private_key_file: '~/id_rsa'
 
 - hosts: remote
   vars_files:
@@ -32,7 +32,7 @@
     - role: setup-remote-dep
     - role: run-harvesters
   vars:
-    ansible_ssh_private_key_file: '~/cloudkey.pem'
+    ansible_ssh_private_key_file: '~/id_rsa'
 
 #- hosts: remote
 #  vars_files:

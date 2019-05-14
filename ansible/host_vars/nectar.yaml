@@ -46,26 +46,28 @@ security_roles_internal:
 
 volumes:
   - vol_name: vol-1
-    vol_size: 5
+    vol_size: 60
   - vol_name: vol-2
-    vol_size: 5
+    vol_size: 60
   - vol_name: vol-3
-    vol_size: 5
-#  - vol_name: vol-4
-#    vol_size: 60
+    vol_size: 60
+  - vol_name: vol-4
+    vol_size: 60
 
-nodes_num: 3
+nodes_num: 4
 nodes:
   - node_name: node-1
   - node_name: node-2
   - node_name: node-3
-#  - node_name: node-4
+  - node_name: node-4
 pip_dep:
   - dep_name: tweepy
   - dep_name: nltk
   - dep_name: pandas
   - dep_name: couchdb
+  - dep_name: shapely
+  - dep_name: textblob
 
 instance_image: afccf48a-9426-4618-86dc-0ceb636f0169
-instance_key_name: cloudkey
-instance_flavor: uom.general.1c4g
+instance_key_name: aji-key
+instance_flavor: uom.general.2c8g
